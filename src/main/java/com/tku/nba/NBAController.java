@@ -5,8 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class NBAController {
@@ -15,25 +17,43 @@ public class NBAController {
     private NBAService nbaService;
 
     @GetMapping("/")
-    public String showReport(
-            @RequestParam(name = "name", required = false, defaultValue = "Stephen Curry") String name,
-            @RequestParam(name = "season", required = false, defaultValue = "2023") String season,
-            @RequestParam(name = "team", required = false, defaultValue = "Warriors") String team,
+    public String showDashboard(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String team,
+            @RequestParam(required = false, defaultValue = "2025") String season,
             Model model) {
 
-        // 1. 準備選單選項
-        model.addAttribute("playerOptions", Arrays.asList("Stephen Curry", "LeBron James", "Luka Doncic", "Kevin Durant", "Rudy Gobert", "Chris Paul"));
-        model.addAttribute("seasonOptions", Arrays.asList("2023", "2022", "2021", "2020"));
-        model.addAttribute("teamOptions", Arrays.asList("Warriors", "Lakers", "Mavericks", "Suns", "Bucks", "Timberwolves"));
+        // 1. 生成 2000-2026 賽季清單
+        List<String> seasonOptions = IntStream.rangeClosed(2000, 2026)
+                .mapToObj(String::valueOf).sorted((a,b)->b.compareTo(a)).collect(Collectors.toList());
 
-        // 2. 抓取數據與趨勢
-        PlayerDTO report = nbaService.getPlayerData(name, season);
-        
-        // 3. 傳遞數據與狀態
+        // 2. 獲取所有球隊與球員
+        List<String> teamOptions = nbaService.getAllTeams();
+        List<String> playerOptions;
+
+        // 核心邏輯 A：如果選了球隊，球員選單要過濾
+        if (team != null && !team.isEmpty() && (name == null || name.isEmpty())) {
+            playerOptions = nbaService.getPlayersByTeam(team);
+        } else {
+            playerOptions = nbaService.getAllPlayers();
+        }
+
+        // 核心邏輯 B：如果選了球員，自動匹配該球員最新的球隊
+        if (name != null && !name.isEmpty()) {
+            team = nbaService.getTeamByPlayer(name, season);
+        }
+
+        // 3. 獲取數據 (若沒選人則回傳空物件)
+        PlayerDTO report = (name != null && !name.isEmpty()) ? 
+                          nbaService.getPlayerData(name, season, team) : null;
+
         model.addAttribute("report", report);
+        model.addAttribute("playerOptions", playerOptions);
+        model.addAttribute("teamOptions", teamOptions);
+        model.addAttribute("seasonOptions", seasonOptions);
         model.addAttribute("selectedName", name);
-        model.addAttribute("selectedSeason", season);
         model.addAttribute("selectedTeam", team);
+        model.addAttribute("selectedSeason", season);
 
         return "report";
     }
