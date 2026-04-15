@@ -9,10 +9,11 @@ public class PlayerDTO {
     private double reb;
     private double ast;
     private String coreStyle;
-    private List<Double> ptsHistory;
+    private List<Double> ptsHistory; // 得分趨勢數據
 
     public PlayerDTO() {}
-    // Getter & Setter 
+    
+    // Getter & Setter
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public String getTeam() { return team; }
