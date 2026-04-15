@@ -65,7 +65,7 @@ public class NBAService {
     }
 
     private String analyzeStyle(double pts, double reb, double ast) {
-        // 這裡完全繼承你的 Python 分類邏輯大腦
+        
         if (pts >= 25 && ast >= 7) {
             return "🌟 頂級全能巨星 (Elite All-Around)";
         } else if (pts >= 25 && reb >= 10) {
