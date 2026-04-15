@@ -7,72 +7,106 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.*;
 
 @Service
 public class NBAService {
     private final ObjectMapper mapper = new ObjectMapper();
-    private final HttpClient client = HttpClient.newHttpClient();
 
-    // 取得所有球隊清單
-    public List<String> getAllTeams() {
-        return Arrays.asList("Lakers", "Warriors", "Celtics", "Bucks", "Suns", "Mavericks", "Nuggets", "Heat", "Bulls");
-    }
+    private final HttpClient client = HttpClient.newBuilder()
+            .followRedirects(HttpClient.Redirect.ALWAYS)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
 
-    // 真實 API 抓取：根據球員名稱、賽季、球隊獲取數據
-    public PlayerDTO getRealPlayerData(String name, String season) {
-        PlayerDTO dto = new PlayerDTO();
+    private final String API_BASE = "https://www.balldontlie.io/api/v1";
+
+    public Map<Integer, String> getTeamMap() {
+        Map<Integer, String> teams = new TreeMap<>();
         try {
-            // 1. 搜尋球員獲取 ID
-            String url = "https://www.balldontlie.io/api/v1/players?search=" + name.replace(" ", "_");
-            String response = fetchData(url);
-            JsonNode dataNode = mapper.readTree(response).get("data");
-
-            if (dataNode.isArray() && dataNode.size() > 0) {
-                JsonNode player = dataNode.get(0);
-                int id = player.get("id").asInt();
-                dto.setFullName(player.get("first_name").asText() + " " + player.get("last_name").asText());
-                dto.setTeam(player.get("team").get("full_name").asText());
-                dto.setSeason(season);
-
-                // 2. 抓取該賽季平均數據
-                String statsUrl = "https://www.balldontlie.io/api/v1/season_averages?season=" + season + "&player_ids[]=" + id;
-                String statsRes = fetchData(statsUrl);
-                JsonNode statsNode = mapper.readTree(statsRes).get("data");
-
-                if (statsNode.isArray() && statsNode.size() > 0) {
-                    dto.setPts(statsNode.get(0).get("pts").asDouble());
-                    dto.setReb(statsNode.get(0).get("reb").asDouble());
-                    dto.setAst(statsNode.get(0).get("ast").asDouble());
-                }
-                
-                // 3. 模擬趨勢圖數據 (API 通常需逐場抓取，這裡根據場均波動生成真實趨勢)
-                dto.setPtsHistory(generateTrend(dto.getPts()));
-                dto.setCoreStyle(analyzeStyle(dto.getPts(), dto.getAst(), dto.getReb()));
+            String res = fetchData(API_BASE + "/teams");
+            JsonNode data = mapper.readTree(res).get("data");
+            for (JsonNode team : data) {
+                teams.put(team.get("id").asInt(), team.get("full_name").asText());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("無法取得球隊清單: " + e.getMessage());
+        }
+        return teams;
+    }
+
+    public List<String> getPlayersByTeam(String teamName) {
+        try {
+
+            String res = fetchData(API_BASE + "/players?per_page=100");
+            JsonNode data = mapper.readTree(res).get("data");
+            List<String> players = new ArrayList<>();
+            for (JsonNode p : data) {
+                if (p.get("team").get("full_name").asText().equalsIgnoreCase(teamName)) {
+                    players.add(p.get("first_name").asText() + " " + p.get("last_name").asText());
+                }
+            }
+            return players;
+        } catch (Exception e) { return Collections.emptyList(); }
+    }
+
+    public PlayerDTO getFullAnalytics(String playerName, String season) {
+        PlayerDTO dto = new PlayerDTO();
+        try {
+            // 1. 查球員 ID
+            String pRes = fetchData(API_BASE + "/players?search=" + playerName.replace(" ", "_"));
+            JsonNode pNode = mapper.readTree(pRes).get("data");
+            if (pNode == null || pNode.size() == 0) return null;
+            
+            int id = pNode.get(0).get("id").asInt();
+            dto.setFullName(pNode.get(0).get("first_name").asText() + " " + pNode.get(0).get("last_name").asText());
+            dto.setTeam(pNode.get(0).get("team").get("full_name").asText());
+            dto.setSeason(season);
+
+            // 2. 查場均數據 
+            String sRes = fetchData(API_BASE + "/season_averages?season=" + season + "&player_ids[]=" + id);
+            JsonNode sData = mapper.readTree(sRes).get("data");
+            
+            if (sData.isArray() && sData.size() > 0) {
+                JsonNode stats = sData.get(0);
+                dto.setPts(stats.get("pts").asDouble());
+                dto.setReb(stats.get("reb").asDouble());
+                dto.setAst(stats.get("ast").asDouble());
+            }
+
+            // 3. 查最近比賽數據 (趨勢圖)
+            String gRes = fetchData(API_BASE + "/stats?player_ids[]=" + id + "&seasons[]=" + season + "&per_page=10");
+            JsonNode gData = mapper.readTree(gRes).get("data");
+            List<Double> history = new ArrayList<>();
+            if (gData.isArray()) {
+                for (JsonNode game : gData) {
+                    history.add(game.get("pts").asDouble());
+                }
+            }
+            dto.setPtsHistory(history);
+            dto.setCoreStyle(analyze(dto.getPts(), dto.getAst(), dto.getReb()));
+
+        } catch (Exception e) {
+            System.err.println("數據抓取核心錯誤: " + e.getMessage());
         }
         return dto;
     }
 
     private String fetchData(String url) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("User-Agent", "Mozilla/5.0") 
+                .header("Accept", "application/json")
+                .GET()
+                .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    private List<Double> generateTrend(double avg) {
-        List<Double> trend = new ArrayList<>();
-        Random r = new Random();
-        for(int i=0; i<7; i++) { trend.add(Math.round((avg + (r.nextDouble() * 10 - 5)) * 10.0) / 10.0); }
-        return trend;
-    }
-
-    private String analyzeStyle(double pts, double ast, double reb) {
+    private String analyze(double pts, double ast, double reb) {
         if (pts >= 25 && ast >= 7) return "🌟 頂級全能超級巨星";
-        if (pts >= 20 && ast >= 5) return "🔥 進攻發動機 (Elite Playmaker)";
-        if (reb >= 10) return "🛡️ 禁區守護神 (Paint Protector)";
-        if (pts >= 15) return "🏹 核心得分手 (Main Scorer)";
-        return "🛠️ 角色球員 (Role Player)";
+        if (pts >= 25) return "🔥 傳奇得分王";
+        if (reb >= 10) return "🛡️ 禁區守護者";
+        if (ast >= 8) return "🪄 核心組織者";
+        return "🛠️ 角色球員";
     }
 }
