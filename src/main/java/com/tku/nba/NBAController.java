@@ -16,45 +16,42 @@ public class NBAController {
     private NBAService nbaService;
 
     @GetMapping("/")
-    public String index(
-            @RequestParam(required = false) String name,
+    public String dashboard(
             @RequestParam(required = false) String team,
-            @RequestParam(required = false, defaultValue = "2025") String season, 
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "2023") String season, 
             Model model) {
 
-        // 1. 生成 2000-2026 賽季選單
+        // 1. 真實球隊名單
+        Map<Integer, String> teamMap = nbaService.getTeamMap();
+        model.addAttribute("teamOptions", teamMap.values());
+
+        // 2. 2000-2026 賽季
         List<String> seasons = IntStream.rangeClosed(2000, 2026)
                 .mapToObj(String::valueOf)
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
+        model.addAttribute("seasonOptions", seasons);
 
-        // 2. 獲取所有球隊
-        List<String> teams = nbaService.getAllTeams();
-
-        // 3. 處理連動邏輯
-        List<String> playerOptions = new ArrayList<>(Arrays.asList("Stephen Curry", "LeBron James", "Luka Doncic", "Kevin Durant", "Nikola Jokic", "Joel Embiid", "Kyrie Irving"));
-        
-        // 如果選了球隊，可以在這裡加入過濾球員的邏輯 (這部分在真實 API 需額外呼叫，此處先以連動展示為主)
-        if (team != null && !team.isEmpty() && (name == null || name.isEmpty())) {
-            // 範例：選了 Lakers 就只留 LeBron
-            if (team.equals("Lakers")) playerOptions = Arrays.asList("LeBron James", "Anthony Davis");
-            if (team.equals("Warriors")) playerOptions = Arrays.asList("Stephen Curry", "Klay Thompson");
+        // 3. 連動邏輯：選了球隊才出球員清單，沒選球隊就顯示幾個熱門球員作為啟動
+        List<String> playerOptions;
+        if (team != null && !team.isEmpty()) {
+            playerOptions = nbaService.getPlayersByTeam(team);
+        } else {
+            playerOptions = Arrays.asList("Stephen Curry", "LeBron James", "Luka Doncic", "Kevin Durant", "Nikola Jokic");
         }
-
-        // 4. 抓取數據 (只有當選了球員名字時才抓)
-        PlayerDTO report = null;
-        if (name != null && !name.isEmpty()) {
-            report = nbaService.getRealPlayerData(name, season);
-            // 選了球員後，強迫球隊選單同步
-            if (report != null) team = report.getTeam().split(" ")[report.getTeam().split(" ").length - 1];
-        }
-
-        model.addAttribute("seasons", seasons);
-        model.addAttribute("teams", teams);
         model.addAttribute("playerOptions", playerOptions);
+
+        // 4. 只有當點選了具體球員名，且不是提示文字時，才去 API 抓資料
+        PlayerDTO report = null;
+        if (name != null && !name.isEmpty() && !name.contains("--")) {
+            report = nbaService.getFullAnalytics(name, season);
+            if (report != null) team = report.getTeam(); // 反向連動球隊
+        }
+
         model.addAttribute("report", report);
-        model.addAttribute("selectedName", name);
         model.addAttribute("selectedTeam", team);
+        model.addAttribute("selectedName", name);
         model.addAttribute("selectedSeason", season);
 
         return "report";
