@@ -2,96 +2,84 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NBA Data Analytics</title>
+    <title>NBA Historical Analysis (2000-2026)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-light">
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-4">🏀 NBA 球員數據分析儀表板</h2>
+        <h2 class="text-center fw-bold mb-4">🏀 NBA 歷史數據庫 (2000-2026)</h2>
 
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form action="/" method="get" class="row g-3">
+                <form id="nbaForm" action="/" method="get" class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">選擇球員</label>
-                        <select name="name" class="form-select">
+                        <label class="form-label small fw-bold">1. 選擇球員</label>
+                        <select name="name" class="form-select" onchange="document.getElementById('nbaForm').submit()">
+                            <option value="">-- 請選擇球員 --</option>
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold">賽季</label>
-                        <select name="season" class="form-select">
-                            <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold">球隊</label>
-                        <select name="team" class="form-select">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">2. 選擇球隊</label>
+                        <select name="team" class="form-select" onchange="document.getElementById('nbaForm').submit()">
+                            <option value="">-- 所有球隊 --</option>
                             <option th:each="t : ${teamOptions}" th:value="${t}" th:text="${t}" th:selected="${t == selectedTeam}"></option>
                         </select>
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button class="btn btn-primary w-100 fw-bold" type="submit">更新報告</button>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">3. 賽季 (預設最新)</label>
+                        <select name="season" class="form-select" onchange="document.getElementById('nbaForm').submit()">
+                            <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
+                        </select>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="row">
+        <div th:if="${report == null}" class="text-center py-5">
+            <div class="display-1 text-muted">📊</div>
+            <h3>請選擇球員或球隊開始分析</h3>
+            <p class="text-secondary">數據涵蓋 2000 年至 2026 年</p>
+        </div>
+
+        <div th:if="${report != null}" class="row fade-in">
             <div class="col-lg-5">
-                <div class="card shadow border-0 text-center h-100">
-                    <div class="card-header bg-dark text-white py-3">
-                        <h4 class="mb-0" th:text="${report.fullName} + ' (' + ${selectedSeason} + ')' ">球員報告</h4>
+                <div class="card shadow border-0 text-center">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h4 class="mb-0" th:text="${report.fullName} + ' (' + ${report.season} + ')'">球員報告</h4>
+                        <small th:text="'所屬球隊：' + ${report.team}"></small>
                     </div>
                     <div class="card-body p-4">
                         <div class="row mb-4">
-                            <div class="col-4"><h5>PTS</h5><p class="h3 fw-bold text-primary" th:text="${report.pts}">0</p></div>
-                            <div class="col-4"><h5>REB</h5><p class="h3 fw-bold text-success" th:text="${report.reb}">0</p></div>
-                            <div class="col-4"><h5>AST</h5><p class="h3 fw-bold text-info" th:text="${report.ast}">0</p></div>
+                            <div class="col-4"><h5>PTS</h5><p class="h3 fw-bold" th:text="${report.pts}"></p></div>
+                            <div class="col-4"><h5>REB</h5><p class="h3 fw-bold" th:text="${report.reb}"></p></div>
+                            <div class="col-4"><h5>AST</h5><p class="h3 fw-bold" th:text="${report.ast}"></p></div>
                         </div>
-                        <div class="alert alert-warning border-0 shadow-sm">
-                            <div class="small text-muted mb-1">統計模型分析結果</div>
-                            <div class="h5 fw-bold mb-0" th:text="${report.coreStyle}">分析中</div>
-                        </div>
+                        <div class="alert alert-dark fw-bold" th:text="${report.coreStyle}"></div>
                     </div>
                 </div>
             </div>
-
             <div class="col-lg-7">
-                <div class="card shadow border-0 h-100">
-                    <div class="card-header bg-white py-3"><h5 class="mb-0 text-center">📈 得分趨勢 (近六場表現)</h5></div>
-                    <div class="card-body">
-                        <canvas id="trendChart" style="max-height: 250px;"></canvas>
-                    </div>
+                <div class="card shadow border-0 p-3">
+                    <canvas id="trendChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <script th:inline="javascript">
-        // 接收 Java 傳來的 List 數據
-        const ptsHistory = [[${report.ptsHistory}]];
-        
+    <script th:if="${report != null}" th:inline="javascript">
         const ctx = document.getElementById('trendChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['G1', 'G2', 'G3', 'G4', 'G5', 'Recent'],
+                labels: ['G1', 'G2', 'G3', 'G4', 'G5', 'G6'],
                 datasets: [{
-                    label: '得分 (Points)',
-                    data: ptsHistory,
+                    label: '得分趨勢',
+                    data: [[${report.ptsHistory}]],
                     borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5
+                    tension: 0.4
                 }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: false } }
             }
         });
     </script>
