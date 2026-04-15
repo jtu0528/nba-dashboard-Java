@@ -1,7 +1,5 @@
-package com.tku.nba.controller;
+package com.tku.nba;
 
-import com.tku.nba.service.NBAService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,17 +8,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class NBAController {
 
-    @Autowired
-    private NBAService nbaService;
-
     @GetMapping("/")
-    public String index() {
-        return "index"; // 指向 index.html
-    }
+    public String showReport(@RequestParam(defaultValue = "LeBron James") String name, Model model) {
+        // 1. 模擬數據 
+        PlayerDTO report = new PlayerDTO();
+        report.setFullName(name);
+        report.setPts(25.7);
+        report.setReb(7.3);
+        report.setAst(8.3);
+        report.setCoreStyle("🌟 頂級全能巨星");
 
-    @GetMapping("/analyze")
-    public String analyze(@RequestParam String name, Model model) {
-        model.addAttribute("report", nbaService.getPlayerAnalysis(name));
-        return "report"; // 指向 report.html 展示結果
+        // 2. 傳給 HTML，名稱叫 "report"
+        model.addAttribute("report", report);
+
+        // 3. 找 templates/report.html
+        return "report";
     }
 }
