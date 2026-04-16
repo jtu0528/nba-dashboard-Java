@@ -3,45 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Data Analytics | TKU Data Science</title>
+    <title>NBA Data Intelligence Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --nba-blue: #0d6efd; --nba-gold: #ffc107; }
-        body { background-color: #f4f7f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .stat-box { background: #fff; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #e0e0e0; transition: transform 0.2s; }
-        .stat-box:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .stat-val { font-size: 2rem; font-weight: 800; color: var(--nba-blue); margin-bottom: 0; }
-        .stat-label { font-size: 0.75rem; font-weight: bold; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        body { background-color: #f4f7f9; font-family: 'Segoe UI', sans-serif; }
+        .stat-box { background: #fff; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #e0e0e0; }
+        .stat-val { font-size: 1.8rem; font-weight: 800; color: #0d6efd; margin-bottom: 0; }
+        .stat-label { font-size: 0.7rem; font-weight: bold; color: #888; text-transform: uppercase; }
         .card { border: none; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-        .analysis-alert { border-left: 5px solid var(--nba-gold); background-color: #fff9e6; border-radius: 10px; }
-        .chart-container { position: relative; height: 300px; width: 100%; }
-        select.form-select { border-radius: 10px; border: 1px solid #ced4da; }
+        .analysis-alert { border-left: 5px solid #ffc107; background-color: #fff9e6; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-4 text-dark">🏀 NBA 數據分析儀表板 <span class="badge bg-primary fs-6">v2.0</span></h2>
+        <h2 class="text-center fw-bold mb-4">🏀 NBA 數據分析儀表板</h2>
 
-        <div class="card mb-5">
+        <div class="card mb-4">
             <div class="card-body p-4">
-                <form id="nbaForm" action="/" method="get" class="row g-3">
+                <form action="/" method="get" class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold small text-secondary">1. 選擇球隊 (自動連動)</label>
+                        <label class="form-label fw-bold small">1. 選擇球隊</label>
                         <select name="team" class="form-select" onchange="this.form.submit()">
                             <option value="">-- 全部球隊 --</option>
                             <option th:each="t : ${teamOptions}" th:value="${t}" th:text="${t}" th:selected="${t == selectedTeam}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold small text-secondary">2. 選擇球員</label>
+                        <label class="form-label fw-bold small">2. 選擇球員</label>
                         <select name="name" class="form-select" onchange="this.form.submit()">
                             <option value="none">-- 請選擇球員 --</option>
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold small text-secondary">3. 觀測賽季 (2000-2026)</label>
+                        <label class="form-label fw-bold small">3. 觀測賽季</label>
                         <select name="season" class="form-select" onchange="this.form.submit()">
                             <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
                         </select>
@@ -53,12 +49,12 @@
         <div th:if="${report != null}">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <div class="card h-100 overflow-hidden">
-                        <div class="card-header bg-dark text-white text-center py-4">
-                            <h3 class="mb-0 fw-bold" th:text="${report.fullName}">球員姓名</h3>
-                            <div class="mt-2">
-                                <span class="badge bg-primary px-3" th:text="${report.season} + ' 賽季'"></span>
-                                <span class="ms-2 small opacity-75" th:text="'| ' + ${report.team}"></span>
+                    <div class="card h-100 overflow-hidden shadow">
+                        <div class="card-header bg-dark text-white text-center py-3">
+                            <h4 class="mb-0 fw-bold" th:text="${report.fullName}">球員姓名</h4>
+                            <div class="mt-1">
+                                <span class="badge bg-primary" th:text="${report.season} + ' 賽季'"></span>
+                                <span class="ms-1 small opacity-75" th:text="'| ' + ${report.team}"></span>
                             </div>
                         </div>
                         <div class="card-body p-4">
@@ -66,5 +62,72 @@
                                 <div class="col-4"><div class="stat-box"><p class="stat-label">PTS</p><p class="stat-val" th:text="${report.pts}"></p></div></div>
                                 <div class="col-4"><div class="stat-box"><p class="stat-label">REB</p><p class="stat-val text-success" th:text="${report.reb}"></p></div></div>
                                 <div class="col-4"><div class="stat-box"><p class="stat-label">AST</p><p class="stat-val text-info" th:text="${report.ast}"></p></div></div>
-                                <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">🛡️ 防守評級</p><p class="stat-val text-danger" th:text="${#numbers.formatDecimal(report.def, 1, 0)}"></p></div></div>
-                                <div class="col
+                                <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">🛡️ 防守評級</p><p class="stat-val text-danger" th:text="${report.def}"></p></div></div>
+                                <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">⚡ 效率指數</p><p class="stat-val text-warning" th:text="${report.eff}"></p></div></div>
+                            </div>
+                            <div class="analysis-alert p-3 shadow-sm">
+                                <h6 class="fw-bold text-dark mb-1" th:text="${report.coreStyle}">核心風格</h6>
+                                <p class="small text-muted mb-0" th:text="${report.simpleRating}">評價內容</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card h-100 p-3 shadow-sm">
+                        <h6 class="text-center fw-bold text-secondary mb-2">綜合能力雷達圖</h6>
+                        <div style="height: 300px;"><canvas id="radarChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card h-100 p-3 shadow-sm">
+                        <h6 class="text-center fw-bold text-secondary mb-2">得分趨勢分析</h6>
+                        <div style="height: 300px;"><canvas id="historyChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${report == null}" class="text-center py-5">
+            <h4 class="text-muted">請完成選單選擇以開啟分析報告</h4>
+        </div>
+    </div>
+
+    <script th:if="${report != null}" th:inline="javascript">
+        // 趨勢圖
+        new Chart(document.getElementById('historyChart'), {
+            type: 'line',
+            data: {
+                labels: ['G1', 'G2', 'G3', 'G4', 'Current'],
+                datasets: [{
+                    data: [[${report.ptsHistory}]],
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    fill: true, tension: 0.4
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        // 雷達圖
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['得分', '籃板', '助攻', '防守', '效率'],
+                datasets: [{
+                    data: [[${report.radarData}]],
+                    backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                    borderColor: '#ffc107',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>
