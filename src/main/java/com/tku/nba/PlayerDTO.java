@@ -1,4 +1,5 @@
 package com.tku.nba;
+
 import java.util.List;
 
 public class PlayerDTO {
@@ -9,10 +10,11 @@ public class PlayerDTO {
     private double reb;
     private double ast;
     private String coreStyle;
-    private List<Double> ptsHistory; // 得分趨勢數據
+    private List<Double> ptsHistory;
+    private List<Integer> radarData;
 
     public PlayerDTO() {}
-    
+
     // Getter & Setter
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
@@ -30,4 +32,6 @@ public class PlayerDTO {
     public void setCoreStyle(String coreStyle) { this.coreStyle = coreStyle; }
     public List<Double> getPtsHistory() { return ptsHistory; }
     public void setPtsHistory(List<Double> ptsHistory) { this.ptsHistory = ptsHistory; }
+    public List<Integer> getRadarData() { return radarData; }
+    public void setRadarData(List<Integer> radarData) { this.radarData = radarData; }
 }
