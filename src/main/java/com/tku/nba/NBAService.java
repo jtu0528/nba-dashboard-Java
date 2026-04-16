@@ -7,69 +7,83 @@ import java.util.*;
 public class NBAService {
 
     /**
-     * 此為自建數據庫，包含球員活躍狀態判定、全中文球隊支援。
+     * 此為自建數據庫，包含球員活躍狀態判定。
      */
     public PlayerDTO getFullAnalytics(String name, String season) {
         PlayerDTO dto = new PlayerDTO();
         dto.setFullName(name);
+        // 預設為選取賽季，若退休則會在下方邏輯覆蓋
         dto.setSeason(season);
-        int year = Integer.parseInt(season);
+        
+        int selectedYear = Integer.parseInt(season);
         String status = "";
 
-        // --- 核心模擬數據引擎：精確球員歷史邏輯 ---
+        // --- 核心模擬數據引擎：精確球員歷史邏輯與賽季回溯 ---
+
         if (name.contains("Michael Jordan")) {
-            if (year > 2003) {
+            int lastActive = 2003;
+            if (selectedYear > lastActive) {
                 status = "【已退役】";
+                dto.setSeason("2003"); // 強制顯示最後賽季
                 setStats(dto, "華盛頓巫師 (傳奇存檔)", 20.0, 6.1, 3.8, 75, 78, Arrays.asList(18.5, 21.0, 19.0, 22.0, 20.0));
-            } else if (year < 2001) {
+            } else if (selectedYear < 2001) {
                 status = "【退休/未復出】";
-                setStats(dto, "芝加哥公牛 (歷史數據)", 28.7, 5.8, 3.5, 96, 92, Arrays.asList(30.0, 35.0, 25.0, 31.0, 28.7));
+                dto.setSeason("1998"); // 強制顯示公牛最後賽季
+                setStats(dto, "芝加哥公牛 (歷史數據)", 28.7, 5.8, 3.5, 96, 92, Arrays.asList(32.0, 28.0, 45.0, 38.0, 30.1));
             } else {
                 setStats(dto, "華盛頓巫師", 21.2, 5.9, 4.4, 78, 80, Arrays.asList(19.0, 22.0, 25.0, 20.0, 21.2));
             }
+
         } else if (name.contains("Kobe Bryant")) {
-            if (year > 2016) {
+            int lastActive = 2016;
+            if (selectedYear > lastActive) {
                 status = "【已退役】";
+                dto.setSeason("2016"); // 強制顯示最後賽季
                 setStats(dto, "洛杉磯湖人 (傳奇存檔)", 17.6, 3.7, 2.8, 65, 68, Arrays.asList(15.0, 12.0, 18.0, 25.0, 17.6));
+            } else if (selectedYear == 2006) {
+                setStats(dto, "洛杉磯湖人", 35.4, 5.3, 4.5, 92, 98, Arrays.asList(40.2, 45.0, 50.0, 30.0, 35.4));
             } else {
-                if (year == 2006) setStats(dto, "洛杉磯湖人", 35.4, 5.3, 4.5, 92, 98, Arrays.asList(40.2, 35.0, 45.0, 31.0, 35.4));
-                else setStats(dto, "洛杉磯湖人", 25.3, 5.2, 4.7, 88, 90, Arrays.asList(22.0, 28.0, 24.0, 26.0, 25.3));
+                setStats(dto, "洛杉磯湖人", 25.3, 5.2, 4.7, 85, 88, Arrays.asList(22.0, 28.0, 24.0, 26.0, 25.3));
             }
-        } else if (name.contains("LeBron James")) {
-            String team = (year <= 2010) ? "克里夫蘭騎士" : (year <= 2014 ? "邁阿密熱火" : (year <= 2018 ? "克里夫蘭騎士" : "洛杉磯湖人"));
-            int defScore = (year <= 2014) ? 94 : 82;
-            setStats(dto, team, 27.2, 7.5, 7.3, defScore, 98, Arrays.asList(25.0, 30.0, 22.0, 28.0, 27.2));
-        } else if (name.contains("Kyrie Irving")) {
-            String team = (year <= 2017) ? "克里夫蘭騎士" : (year <= 2019 ? "波士頓塞爾提克" : (year <= 2023 ? "布魯克林籃網" : "達拉斯獨行俠"));
-            setStats(dto, team, 23.5, 3.9, 5.7, 60, 92, Arrays.asList(20.0, 25.0, 22.0, 23.6));
-        } else if (name.contains("Devin Booker")) {
-            if (year < 2015) { status = "【尚未入盟】"; setStats(dto, "N/A", 0,0,0, 0,0, Arrays.asList(0.0)); }
-            else setStats(dto, "鳳凰城太陽", 27.1, 4.5, 6.9, 70, 89, Arrays.asList(25.0, 32.0, 28.0, 27.1));
-        } else if (name.contains("Dillon Brooks")) {
-            String team = (year <= 2023) ? "曼菲斯灰熊" : "休士頓火箭";
-            setStats(dto, team, 12.7, 3.4, 1.7, 95, 62, Arrays.asList(10.0, 14.0, 12.7));
-        } else if (name.contains("Giannis Antetokounmpo")) {
-            if (year < 2013) { status = "【尚未入盟】"; setStats(dto, "N/A", 0,0,0, 0,0, Arrays.asList(0.0)); }
-            else setStats(dto, "密爾瓦基公鹿", 30.4, 11.5, 6.5, 98, 96, Arrays.asList(28.0, 32.0, 35.0, 30.4));
-        } else if (name.contains("Kyle Kuzma")) {
-            String team = (year <= 2021) ? "洛杉磯湖人" : "華盛頓巫師";
-            setStats(dto, team, 22.2, 6.6, 4.2, 72, 78, Arrays.asList(18.0, 26.0, 22.2));
+
         } else if (name.contains("Dwight Howard")) {
-            String team = (year <= 2012) ? "奧蘭多魔術" : (year == 2013 ? "洛杉磯湖人" : (year <= 2016 ? "休士頓火箭" : "洛杉磯湖人"));
-            setStats(dto, team, 16.0, 11.7, 1.4, 99, 85, Arrays.asList(16.0, 22.0, 16.0));
+            int lastActive = 2022;
+            if (selectedYear > lastActive) {
+                status = "【已退役】";
+                dto.setSeason("2022"); // 強制顯示最後賽季
+                setStats(dto, "洛杉磯湖人 (傳奇存檔)", 6.2, 5.9, 0.6, 82, 60, Arrays.asList(6.2, 5.0, 8.0, 6.2));
+            } else if (selectedYear <= 2012) {
+                setStats(dto, "奧蘭多魔術", 18.4, 13.0, 1.5, 99, 85, Arrays.asList(18.0, 22.0, 18.4));
+            } else {
+                setStats(dto, "NBA 團隊", 13.0, 10.0, 1.2, 88, 75, Arrays.asList(13.0));
+            }
+
+        } else if (name.contains("LeBron James")) {
+            // LeBron 尚在活躍，直接使用選取年份
+            String team = (selectedYear <= 2010) ? "克里夫蘭騎士" : (selectedYear <= 2014 ? "邁阿密熱火" : (selectedYear <= 2018 ? "克里夫蘭騎士" : "洛杉磯湖人"));
+            setStats(dto, team, 27.2, 7.5, 7.3, 85, 98, Arrays.asList(25.0, 30.0, 22.0, 28.0, 27.2));
+
         } else if (name.contains("Stephen Curry")) {
-            if (year < 2009) { status = "【尚未入盟】"; setStats(dto, "N/A", 0,0,0, 0,0, Arrays.asList(0.0)); }
-            else setStats(dto, "金州勇士", 27.3, 4.8, 6.5, 70, 99, Arrays.asList(22.0, 35.0, 28.0, 31.0, 27.3));
+            if (selectedYear < 2009) {
+                status = "【尚未入盟】";
+                setStats(dto, "N/A", 0,0,0,0,0, Arrays.asList(0.0));
+            } else {
+                setStats(dto, "金州勇士", 27.3, 4.8, 6.5, 72, 99, Arrays.asList(22.0, 35.0, 28.0, 31.0, 27.3));
+            }
         } else if (name.contains("Luka Doncic")) {
-            if (year < 2018) { status = "【尚未入盟】"; setStats(dto, "N/A", 0,0,0, 0,0, Arrays.asList(0.0)); }
-            else setStats(dto, "達拉斯獨行俠", 33.9, 9.2, 9.8, 75, 97, Arrays.asList(30.0, 40.0, 33.9));
+            if (selectedYear < 2018) {
+                status = "【尚未入盟】";
+                setStats(dto, "N/A", 0,0,0,0,0, Arrays.asList(0.0));
+            } else {
+                setStats(dto, "達拉斯獨行俠", 33.9, 9.2, 9.8, 75, 97, Arrays.asList(30.0, 40.0, 33.9));
+            }
         } else {
             setStats(dto, "NBA 聯盟", 15.0, 4.0, 4.0, 70, 70, Arrays.asList(15.0));
         }
 
         // 統計標註
         if (status.contains("退役")) dto.setCoreStyle("🐍 歷史傳奇存檔");
-        else if (status.contains("尚未") || dto.getPts() == 0) dto.setCoreStyle("⏳ 非活躍賽季");
+        else if (dto.getPts() == 0) dto.setCoreStyle("⏳ 非活躍賽季");
         else dto.setCoreStyle(analyzeStyle(dto.getPts(), dto.getAst(), dto.getReb(), dto.getDef(), dto.getEff()));
 
         dto.setFullName(status + dto.getFullName());
@@ -93,47 +107,29 @@ public class NBAService {
     }
 
     public List<String> getTeams() {
-        return Arrays.asList("洛杉磯湖人", "金州勇士", "芝加哥公牛", "達拉斯獨行俠", "鳳凰城太陽", "密爾瓦基公鹿", "奧蘭多魔術", "休士頓火箭", "華盛頓巫師", "克里夫蘭騎士", "邁阿密熱火", "波士頓塞爾提克", "布魯克林籃網", "曼菲斯灰熊");
+        return Arrays.asList("洛杉磯湖人", "金州勇士", "芝加哥公牛", "達拉斯獨行俠", "鳳凰城太陽", "密爾瓦基公鹿", "奧蘭多魔術", "休士頓火箭", "華盛頓巫師", "克里夫蘭騎士", "邁阿密熱火");
     }
-
 
     public List<String> getPlayersByTeamAndSeason(String team, String season) {
         int year = Integer.parseInt(season);
         List<String> players = new ArrayList<>();
-
         if ("洛杉磯湖人".equals(team)) {
             if (year <= 2016) players.add("Kobe Bryant");
             if (year >= 2018) players.add("LeBron James");
             if (year >= 2017 && year <= 2021) players.add("Kyle Kuzma");
             if (year == 2013 || year == 2020 || year == 2022) players.add("Dwight Howard");
-        } else if ("克里夫蘭騎士".equals(team)) {
-            if (year <= 2010 || (year >= 2014 && year <= 2018)) players.add("LeBron James");
-            if (year >= 2011 && year <= 2017) players.add("Kyrie Irving");
-        } else if ("邁阿密熱火".equals(team)) {
-            if (year >= 2011 && year <= 2014) players.add("LeBron James");
         } else if ("芝加哥公牛".equals(team)) {
             if (year <= 1998) players.add("Michael Jordan");
-        } else if ("華盛頓巫師".equals(team)) {
-            if (year >= 2001 && year <= 2003) players.add("Michael Jordan");
-            if (year >= 2021) players.add("Kyle Kuzma");
         } else if ("達拉斯獨行俠".equals(team)) {
             if (year >= 2018) players.add("Luka Doncic");
             if (year >= 2023) players.add("Kyrie Irving");
         } else if ("金州勇士".equals(team)) {
             if (year >= 2009) players.add("Stephen Curry");
-        } else if ("鳳凰城太陽".equals(team)) {
-            if (year >= 2015) players.add("Devin Booker");
-        } else if ("密爾瓦基公鹿".equals(team)) {
-            if (year >= 2013) players.add("Giannis Antetokounmpo");
         } else if ("奧蘭多魔術".equals(team)) {
             if (year >= 2004 && year <= 2012) players.add("Dwight Howard");
-        } else if ("休士頓火箭".equals(team)) {
-            if (year >= 2013 && year <= 2016) players.add("Dwight Howard");
-            if (year >= 2023) players.add("Dillon Brooks");
-        } else if ("曼菲斯灰熊".equals(team)) {
-            if (year >= 2017 && year <= 2023) players.add("Dillon Brooks");
+        } else if ("華盛頓巫師".equals(team)) {
+            if (year >= 2001 && year <= 2003) players.add("Michael Jordan");
         }
-
         return players.isEmpty() ? Arrays.asList("目前該賽季無資料") : players;
     }
 }
