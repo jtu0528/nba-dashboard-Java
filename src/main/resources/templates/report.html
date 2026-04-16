@@ -12,33 +12,32 @@
         .stat-label { font-size: 0.7rem; color: #777; font-weight: bold; }
         .card { border: none; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .analysis-box { background: #fff3cd; border-left: 5px solid #ffc107; border-radius: 8px; }
-        canvas { max-height: 280px; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-4">🏀 NBA 數據儀表板</h2>
+        <h2 class="text-center fw-bold mb-4 text-primary">🏀 NBA 數據分析儀表板 (Java)</h2>
 
-        <div class="card mb-4 shadow-sm">
+        <div class="card shadow-sm mb-4">
             <div class="card-body p-4">
                 <form action="/" method="get" class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">球隊</label>
-                        <select name="team" class="form-select" onchange="this.form.submit()">
+                        <label class="form-label small fw-bold">1. 選擇球隊</label>
+                        <select name="team" class="form-select border-primary" onchange="this.form.submit()">
                             <option value="">-- 全部 --</option>
                             <option th:each="t : ${teamOptions}" th:value="${t}" th:text="${t}" th:selected="${t == selectedTeam}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">球員</label>
-                        <select name="name" class="form-select" onchange="this.form.submit()">
+                        <label class="form-label small fw-bold">2. 選擇球員</label>
+                        <select name="name" class="form-select border-primary" onchange="this.form.submit()">
                             <option value="none">-- 選擇球員 --</option>
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">賽季</label>
-                        <select name="season" class="form-select" onchange="this.form.submit()">
+                        <label class="form-label small fw-bold">3. 觀測賽季</label>
+                        <select name="season" class="form-select border-primary" onchange="this.form.submit()">
                             <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
                         </select>
                     </div>
@@ -61,7 +60,7 @@
                             <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">🛡️ 防守</p><p class="stat-val text-danger" th:text="${report.def}"></p></div></div>
                             <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">⚡ 效率</p><p class="stat-val text-warning" th:text="${report.eff}"></p></div></div>
                         </div>
-                        <div class="analysis-box p-3">
+                        <div class="analysis-box p-3 shadow-sm">
                             <h6 class="fw-bold mb-1" th:text="${report.coreStyle}"></h6>
                             <p class="small text-muted mb-0" th:text="${report.simpleRating}"></p>
                         </div>
@@ -71,40 +70,40 @@
             <div class="col-lg-4">
                 <div class="card h-100 p-4 shadow-sm">
                     <h6 class="text-center fw-bold text-muted mb-3">綜合能力分佈</h6>
-                    <canvas id="radarChart"></canvas>
+                    <div style="height: 280px;"><canvas id="radarChart"></canvas></div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card h-100 p-4 shadow-sm">
                     <h6 class="text-center fw-bold text-muted mb-3">得分趨勢分析</h6>
-                    <canvas id="historyChart"></canvas>
+                    <div style="height: 280px;"><canvas id="historyChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script th:if="${report != null}" th:inline="javascript">
-        // 得分趨勢圖 - 確保數據存在
-        const historyData = [[${report.ptsHistory}]];
-        if(historyData && historyData.length > 0) {
+        // 趨勢圖加固邏輯
+        const ptsData = [[${report.ptsHistory}]];
+        if (ptsData && ptsData.length > 0) {
             new Chart(document.getElementById('historyChart'), {
                 type: 'line',
                 data: {
-                    labels: ['G1', 'G2', 'G3', 'G4', 'Current'],
+                    labels: ptsData.map((_, i) => 'G' + (i + 1)),
                     datasets: [{
-                        data: historyData,
+                        data: ptsData,
                         borderColor: '#0d6efd',
                         backgroundColor: 'rgba(13, 110, 253, 0.1)',
                         fill: true, tension: 0.4
                     }]
                 },
-                options: { plugins: { legend: { display: false } }, responsive: true }
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
         // 雷達圖
         const radarData = [[${report.radarData}]];
-        if(radarData && radarData.length > 0) {
+        if (radarData && radarData.length > 0) {
             new Chart(document.getElementById('radarChart'), {
                 type: 'radar',
                 data: {
@@ -119,7 +118,7 @@
                 options: {
                     scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } },
                     plugins: { legend: { display: false } },
-                    responsive: true
+                    maintainAspectRatio: false
                 }
             });
         }
