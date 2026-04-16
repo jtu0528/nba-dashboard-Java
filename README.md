@@ -1,8 +1,13 @@
-## 🚀 進階實踐：NBA 數據分析系統 (Spring Boot 重構版)
+## 🏀 NBA Data Intelligence Dashboard (Java Edition)
 
-本專案將原本的 Python Streamlit 應用程序重構為 **企業級 Spring Boot Web 架構**，展現後端系統設計能力：
+### 📌 專案簡介
+本專案為 NBA 球員數據分析系統的 Java 版實作，旨在將原有的 Python 資料分析邏輯遷移至全端 Web 架構。系統支援 2000-2026 年間的傳奇與現役巨星數據調閱，並提供即時的數據分類分析與得分趨勢視覺化。
 
-- **API 整合設計**：捨棄易碎的 Web Scraping，改採 RESTful API 呼叫獲取數據，提升系統穩定性。
-- **MVC 架構實踐**：嚴格區分 Controller, Service, 與 Model 層級，確保代碼具備高度可測試性與維護性。
-- **跨語言開發實力**：成功將 Python 數據分析演算法 (Style Analysis Logic) 移植至 Java 環境，並優化運算效能。
-- **專業前端展示**：結合 Thymeleaf 模板引擎與 Bootstrap 框架，打造具備響應式設計的數據儀表板。
+### 🛠️ 技術轉型與挑戰
+* **開發框架**：由 Python Streamlit 遷移至 Java Spring Boot + Thymeleaf。
+* **數據獲取**：目前開發階段已實作高效能內部數據引擎。雖然 Java 網路爬蟲技術（Jsoup/HttpClient）尚在研習階段，但為了確保在雲端環境（Render）下的運行穩定性與錄製流暢度，本專案現階段採用**自建模擬數據庫**進行演示。
+* **交互邏輯**：實作了雙向連動下拉選單（球隊過濾球員、球員匹配球隊）。
+
+### 📊 核心功能
+* **動態分類系統**：根據場均 PTS/REB/AST 進行統計建模，自動標註球員風格。
+* **趨勢圖表**：整合 Chart.js 呈現球員最近場次得分波動。
