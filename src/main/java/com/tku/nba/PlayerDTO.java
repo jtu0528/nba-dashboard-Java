@@ -9,9 +9,11 @@ public class PlayerDTO {
     private double pts;
     private double reb;
     private double ast;
+    private double def;      
+    private double eff;      
     private String coreStyle;
     private List<Double> ptsHistory;
-    private List<Integer> radarData;
+    private List<Integer> radarData; 
 
     public PlayerDTO() {}
 
@@ -28,6 +30,10 @@ public class PlayerDTO {
     public void setReb(double reb) { this.reb = reb; }
     public double getAst() { return ast; }
     public void setAst(double ast) { this.ast = ast; }
+    public double getDef() { return def; }
+    public void setDef(double def) { this.def = def; }
+    public double getEff() { return eff; }
+    public void setEff(double eff) { this.eff = eff; }
     public String getCoreStyle() { return coreStyle; }
     public void setCoreStyle(String coreStyle) { this.coreStyle = coreStyle; }
     public List<Double> getPtsHistory() { return ptsHistory; }
