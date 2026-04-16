@@ -22,26 +22,27 @@ public class NBAController {
             @RequestParam(required = false, defaultValue = "2025") String season, 
             Model model) {
 
-        // 此為動態生成 2000-2026 賽季選單
         List<String> seasons = IntStream.rangeClosed(2000, 2026)
                 .mapToObj(String::valueOf).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         
         model.addAttribute("teamOptions", nbaService.getTeams());
         model.addAttribute("seasonOptions", seasons);
 
-        // 實作連動邏輯：優先過濾球員名單
-        List<String> playerOptions = (team != null && !team.isEmpty()) ? 
-                                     nbaService.getPlayersByTeam(team) : 
-                                     nbaService.getPlayersByTeam("all");
+        // 根據賽季與球隊，動態決定球員選單內容
+        List<String> playerOptions;
+        if (team != null && !team.isEmpty()) {
+            playerOptions = nbaService.getPlayersByTeamAndSeason(team, season);
+        } else {
+            playerOptions = Arrays.asList("Michael Jordan", "Kobe Bryant", "LeBron James", "Stephen Curry", "Luka Doncic", "Giannis Antetokounmpo");
+        }
         model.addAttribute("playerOptions", playerOptions);
 
-        // 執行資料調閱邏輯
         PlayerDTO report = null;
-        if (name != null && !name.isEmpty() && !name.equals("none")) {
+        if (name != null && !name.isEmpty() && !name.equals("none") && !name.contains("無資料")) {
             report = nbaService.getFullAnalytics(name, season);
-            // 實作反向連動：確保球隊選單同步該球員所屬隊伍
-            if (report != null && (team == null || team.isEmpty())) {
-                team = report.getTeam();
+            // 如果切換年份導致球員換隊，自動同步球隊選單
+            if (report != null) {
+                team = report.getTeam().contains("(") ? report.getTeam().split(" ")[0] : report.getTeam();
             }
         }
 
