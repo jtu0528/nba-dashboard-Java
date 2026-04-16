@@ -8,28 +8,28 @@
 </head>
 <body class="bg-light">
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-4">🏀 NBA 數據中心 (2000-2026)</h2>
+        <h2 class="text-center fw-bold mb-4 text-primary">🏀 NBA 數據分析儀表板 (Java Edition)</h2>
 
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body">
+        <div class="card shadow border-0 mb-4">
+            <div class="card-body p-4">
                 <form id="nbaForm" action="/" method="get" class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">1. 選擇球隊</label>
-                        <select name="team" class="form-select" onchange="this.form.submit()">
-                            <option value="">-- 所有球隊 --</option>
+                        <label class="form-label fw-bold small">1. 選擇球隊 (自動過濾球員)</label>
+                        <select name="team" class="form-select border-primary" onchange="this.form.submit()">
+                            <option value="">-- 全部球隊 --</option>
                             <option th:each="t : ${teamOptions}" th:value="${t}" th:text="${t}" th:selected="${t == selectedTeam}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">2. 選擇球員</label>
-                        <select name="name" class="form-select" onchange="this.form.submit()">
-                            <option value="">-- 請選擇球員 --</option>
+                        <label class="form-label fw-bold small">2. 選擇球員</label>
+                        <select name="name" class="form-select border-primary" onchange="this.form.submit()">
+                            <option value="none">-- 請選擇球員 --</option>
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">3. 賽季</label>
-                        <select name="season" class="form-select" onchange="this.form.submit()">
+                        <label class="form-label fw-bold small">3. 指定賽季 (2000-2026)</label>
+                        <select name="season" class="form-select border-primary" onchange="this.form.submit()">
                             <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
                         </select>
                     </div>
@@ -37,10 +37,10 @@
             </div>
         </div>
 
-        <div th:if="${report == null}" class="text-center py-5 bg-white rounded shadow-sm border">
-            <h1 class="display-1">🔍</h1>
-            <h4 class="text-muted">請選擇球隊與球員以調閱真實數據</h4>
-            <p class="small text-secondary">數據來自 NBA 官方數據庫 API</p>
+        <div th:if="${report == null}" class="text-center py-5 bg-white rounded shadow-sm">
+            <p class="display-1 text-muted">📊</p>
+            <h4 class="text-muted">等待分析指令</h4>
+            <p class="small">請從上方選單選取欲調閱之 NBA 歷史數據</p>
         </div>
 
         <div th:if="${report != null}" class="row g-4">
@@ -50,37 +50,37 @@
                         <h4 class="mb-0" th:text="${report.fullName}"></h4>
                         <small th:text="${report.season} + ' 賽季 | ' + ${report.team}"></small>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="row mb-3">
-                            <div class="col-4 border-end"><h6>PTS</h6><p class="h2 fw-bold text-primary" th:text="${report.pts}"></p></div>
-                            <div class="col-4 border-end"><h6>REB</h6><p class="h2 fw-bold text-success" th:text="${report.reb}"></p></div>
-                            <div class="col-4"><h6>AST</h6><p class="h2 fw-bold text-info" th:text="${report.ast}"></p></div>
+                    <div class="card-body">
+                        <div class="row my-4">
+                            <div class="col-4 border-end"><h6>PTS</h6><p class="h3 fw-bold text-primary" th:text="${report.pts}"></p></div>
+                            <div class="col-4 border-end"><h6>REB</h6><p class="h3 fw-bold text-success" th:text="${report.reb}"></p></div>
+                            <div class="col-4"><h6>AST</h6><p class="h3 fw-bold text-info" th:text="${report.ast}"></p></div>
                         </div>
-                        <div class="alert alert-warning fw-bold" th:text="${report.coreStyle}"></div>
+                        <div class="alert alert-warning h5 fw-bold" th:text="${report.coreStyle}"></div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="card shadow border-0 p-3 h-100">
-                    <h5 class="text-center">📈 真實得分趨勢 (最近 10 場)</h5>
-                    <canvas id="realChart"></canvas>
+                    <h5 class="text-center mb-3">📈 得分趨勢動態分析</h5>
+                    <canvas id="historyChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <script th:if="${report != null}" th:inline="javascript">
-        new Chart(document.getElementById('realChart'), {
+        new Chart(document.getElementById('historyChart'), {
             type: 'line',
             data: {
-                labels: [[${report.ptsHistory}]].map((_, i) => 'G' + (i+1)),
+                labels: ['G1', 'G2', 'G3', 'G4', 'G5', 'Current'],
                 datasets: [{
-                    label: '真實分數',
+                    label: '賽季表現',
                     data: [[${report.ptsHistory}]],
                     borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    backgroundColor: 'rgba(13, 110, 253, 0.05)',
                     fill: true,
-                    tension: 0.3
+                    tension: 0.4
                 }]
             }
         });
