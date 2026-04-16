@@ -9,15 +9,19 @@ public class PlayerDTO {
     private double pts;
     private double reb;
     private double ast;
-    private double def;      
-    private double eff;      
-    private String coreStyle;
+    private double def;
+    private double eff;
+    private String coreStyle;   
+    private String simpleRating; 
     private List<Double> ptsHistory;
-    private List<Integer> radarData; 
+    private List<Integer> radarData;
 
     public PlayerDTO() {}
 
     // Getter & Setter
+    public String getSimpleRating() { return simpleRating; }
+    public void setSimpleRating(String simpleRating) { this.simpleRating = simpleRating; }
+    
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public String getTeam() { return team; }
