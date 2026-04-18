@@ -19,12 +19,16 @@ public class NBAController {
     public String index(
             @RequestParam(required = false) String team,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false, defaultValue = "2026") String season, 
+            @RequestParam(required = false, defaultValue = "2026") String season,
+            @RequestParam(required = false, defaultValue = "TOT") String selectedTeam, 
             Model model) {
 
         // 1. 生成賽季清單
         List<String> seasons = IntStream.rangeClosed(2000, 2026)
-                .mapToObj(String::valueOf).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+                .mapToObj(String::valueOf)
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        
         model.addAttribute("teamOptions", nbaService.getTeams());
         model.addAttribute("seasonOptions", seasons);
 
@@ -33,8 +37,8 @@ public class NBAController {
         if (team != null && !team.isEmpty()) {
             playerOptions.addAll(nbaService.getPlayersByTeamAndSeason(team, season));
         } else {
-            
-            playerOptions.addAll(Arrays.asList("Michael Jordan", "Kobe Bryant", "LeBron James", "Stephen Curry", "Luka Doncic"));
+            // 預設推薦球員清單
+            playerOptions.addAll(Arrays.asList("LeBron James", "Kobe Bryant", "Stephen Curry", "Luka Doncic", "Victor Wembanyama"));
         }
 
         // --- 防重置核心邏輯 ---
@@ -46,16 +50,24 @@ public class NBAController {
         // 3. 獲取分析報告
         PlayerDTO report = null;
         if (name != null && !name.isEmpty() && !name.equals("none")) {
-            report = nbaService.getFullAnalytics(name, season);
+            report = nbaService.getFullAnalytics(name, season, selectedTeam);
+            
             if (report != null) {
                 // 如果球員換隊，自動更新球隊選單顯示
-                String cleanTeam = report.getTeam().split(" ")[0];
-                if (nbaService.getTeams().contains(cleanTeam)) team = cleanTeam;
+                String rawTeam = report.getTeam();
+                if (rawTeam != null && !rawTeam.isEmpty()) {
+                    String cleanTeam = rawTeam.split(" ")[0];
+                    if (nbaService.getTeams().contains(cleanTeam)) {
+                        team = cleanTeam;
+                    }
+                }
             }
         }
 
+        // 4. 返回模型數據
         model.addAttribute("report", report);
-        model.addAttribute("selectedTeam", team);
+        model.addAttribute("selectedTeam", team);       // 頂部選單用的球隊
+        model.addAttribute("currentTeam", selectedTeam); // 數據分析用的特定球隊標記
         model.addAttribute("selectedName", name);
         model.addAttribute("selectedSeason", season);
 
