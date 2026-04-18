@@ -10,12 +10,7 @@ public class NBAService {
     private final double HIGH_AST = 8.0;
     private final double HIGH_REB = 10.0;
 
-    public PlayerDTO getFullAnalytics(String name, String season, String selectedTeam) {
-        PlayerDTO d = new PlayerDTO();
-        d.setFullName(name);
-        d.setSeason(season);
-        int year = Integer.parseInt(season);
-
+    private void populatePlayerStats(PlayerDTO d, String name, int year, String selectedTeam) {
         if (name.contains("LeBron James")) handleLeBron(d, year, selectedTeam);
         else if (name.contains("Kobe Bryant")) handleKobe(d, year, selectedTeam);
         else if (name.contains("Stephen Curry")) handleCurry(d, year, selectedTeam);
@@ -41,6 +36,44 @@ public class NBAService {
         else if (name.contains("Pau Gasol")) handleGasol(d, year, selectedTeam);
         else if (name.contains("Damian Lillard")) handleLillard(d, year, selectedTeam);
         else if (name.contains("Jamal Murray")) handleMurray(d, year, selectedTeam);
+        else setStats(d, "NBA 明星", 15.0, 5.0, 5.0, 75, 80, Arrays.asList(15.0));
+    }
+
+    // 計算該賽季資料庫中所有活躍球員的平均數據
+    private double getSeasonAverage(int year, String category) {
+        List<String> allPlayers = new ArrayList<>();
+        // 抓出該年度所有球隊的球員
+        for (String t : getTeams()) {
+            allPlayers.addAll(getPlayersByTeamAndSeason(t, String.valueOf(year)));
+        }
+        allPlayers = new ArrayList<>(new LinkedHashSet<>(allPlayers)); 
+
+        double total = 0.0;
+        int count = 0;
+
+        for (String pName : allPlayers) {
+            PlayerDTO temp = new PlayerDTO();
+            // 抓取數據但不跑 analyzeStyle，避免遞迴
+            populatePlayerStats(temp, pName, year, "TOT"); 
+            
+            // 排除尚未入盟、受傷報銷或已退役
+            if (temp.getPts() > 0 && temp.getTeam() != null && !temp.getTeam().contains("已退役")) { 
+                if ("PTS".equals(category)) total += temp.getPts();
+                else if ("AST".equals(category)) total += temp.getAst();
+                else if ("REB".equals(category)) total += temp.getReb();
+                count++;
+            }
+        }
+        return count > 0 ? (total / count) : 0.0;
+    }
+
+    public PlayerDTO getFullAnalytics(String name, String season, String selectedTeam) {
+        PlayerDTO d = new PlayerDTO();
+        d.setFullName(name);
+        d.setSeason(season);
+        int year = Integer.parseInt(season);
+
+		populatePlayerStats(d, name, year, selectedTeam);
 
 // 狀態分析 「正常出賽」、「尚未入盟」與「賽季報銷」
         if (d.getPts() > 0) {
