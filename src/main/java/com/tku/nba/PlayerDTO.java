@@ -18,15 +18,15 @@ public class PlayerDTO {
     private List<Double> ptsHistory;
     private List<Integer> radarData; 
     
+    // 多隊切換按鈕
     private List<String> availableTeams; 
 
+    // 動態比較圖表
     private String compareCategory; 
-    private double compareValue;   
+    private double compareValue;    
     private double averageValue;    
 
     public PlayerDTO() {}
-
-    // --- Getter & Setter ---
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
