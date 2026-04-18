@@ -523,7 +523,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     }
 
     // --- Kevin Durant ---
-    private void handleDurant(PlayerDTO d, int y) {
+    private void handleDurant(PlayerDTO d, int y, String t) {
         if (y < 2007) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
             case 2007: setStats(d, "西雅圖超音速", 20.3, 4.4, 2.4, 75, 82, Arrays.asList(20.3)); break;
@@ -549,7 +549,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     }
 
     // --- Stephen Curry ---
-    private void handleCurry(PlayerDTO d, int y) {
+    private void handleCurry(PlayerDTO d, int y, String t) {
         if (y < 2009) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
             case 2009: setStats(d, "金州勇士", 17.5, 4.5, 5.9, 70, 88, Arrays.asList(17.5)); break;
@@ -573,7 +573,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     }
 
     // --- Kobe Bryant ---
-    private void handleKobe(PlayerDTO d, int y) {
+    private void handleKobe(PlayerDTO d, int y, String t) {
 	if (y < 1996) { setStats(d, "尚未入盟", 0,0,0,0,0, Arrays.asList(0.0)); return; }
         if (y > 2015) { setStats(d, "洛杉磯湖人 (已退役)", 17.6, 3.7, 2.8, 65, 70, Arrays.asList(17.6)); return; }
         switch (y) {
