@@ -6,41 +6,51 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: #f8f9fa; }
-        .stat-box { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 12px; text-align: center; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        .stat-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 15px; text-align: center; transition: transform 0.2s; }
+        .stat-box:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .stat-val { font-size: 1.8rem; font-weight: 800; color: #0d6efd; margin: 0; }
-        .stat-label { font-size: 0.7rem; color: #777; font-weight: bold; }
-        .card { border: none; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .analysis-box { background: #fff3cd; border-left: 5px solid #ffc107; border-radius: 8px; }
+        .stat-label { font-size: 0.75rem; color: #888; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .card { border: none; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        /* 狀態顏色動態調整 */
+        .analysis-box { border-left: 5px solid #ffc107; border-radius: 12px; transition: all 0.3s; }
+        .status-retired { background: #e9ecef; border-left-color: #6c757d; }
+        .status-injured { background: #fff5f5; border-left-color: #fa5252; }
+        .status-not-joined { background: #f3f0ff; border-left-color: #7950f2; }
+        .status-normal { background: #fff3cd; border-left-color: #ffc107; }
+        
+        .badge-team { background: #343a40; color: #fff; padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-4 text-primary">🏀 NBA 數據分析儀表板 (Java)</h2>
+        <h2 class="text-center fw-bold mb-5 text-dark">🏀 NBA 數據智慧分析儀表板</h2>
 
-        <div class="card shadow-sm mb-4">
+        <div class="card mb-4">
             <div class="card-body p-4">
-                <form action="/" method="get" class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">1. 選擇球隊</label>
-                        <select name="team" class="form-select border-primary" onchange="this.form.submit()">
-                            <option value="">-- 全部 --</option>
+                <form action="/" method="get" class="row g-3" id="analysisForm">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">1. 篩選球隊</label>
+                        <select name="team" class="form-select border-0 bg-light" onchange="this.form.submit()">
+                            <option value="">-- 全部球隊 --</option>
                             <option th:each="t : ${teamOptions}" th:value="${t}" th:text="${t}" th:selected="${t == selectedTeam}"></option>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">2. 選擇球員</label>
-                        <select name="name" class="form-select border-primary" onchange="this.form.submit()">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">2. 選擇球員</label>
+                        <select name="name" class="form-select border-0 bg-light" onchange="this.form.submit()">
                             <option value="none">-- 選擇球員 --</option>
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">3. 觀測賽季</label>
-                        <select name="season" class="form-select border-primary" onchange="this.form.submit()">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted">3. 觀測賽季</label>
+                        <select name="season" class="form-select border-0 bg-light" onchange="this.form.submit()">
                             <option th:each="s : ${seasonOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedSeason}"></option>
                         </select>
                     </div>
+                    <input type="hidden" name="selectedTeam" th:value="${currentTeam != null ? currentTeam : 'TOT'}">
                 </form>
             </div>
         </div>
@@ -48,80 +58,114 @@
         <div th:if="${report != null}" class="row g-4">
             <div class="col-lg-4">
                 <div class="card h-100 overflow-hidden">
-                    <div class="card-header bg-dark text-white text-center py-3">
-                        <h4 class="mb-0" th:text="${report.fullName}"></h4>
-                        <small th:text="${report.season} + ' 賽季 | ' + ${report.team}"></small>
+                    <div class="card-header bg-dark text-white text-center py-4 border-0">
+                        <h3 class="mb-1 fw-bold" th:text="${report.fullName}"></h3>
+                        <div class="d-flex justify-content-center gap-2 align-items-center mt-2">
+                            <span class="badge bg-primary" th:text="${report.season} + ' SEASON'"></span>
+                            <span class="badge-team" th:text="${report.team}"></span>
+                        </div>
                     </div>
                     <div class="card-body p-4">
-                        <div class="row g-2 mb-4">
+                        <div class="row g-3 mb-4">
                             <div class="col-4"><div class="stat-box"><p class="stat-label">PTS</p><p class="stat-val" th:text="${report.pts}"></p></div></div>
                             <div class="col-4"><div class="stat-box"><p class="stat-label">REB</p><p class="stat-val text-success" th:text="${report.reb}"></p></div></div>
                             <div class="col-4"><div class="stat-box"><p class="stat-label">AST</p><p class="stat-val text-info" th:text="${report.ast}"></p></div></div>
-                            <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">🛡️ 防守</p><p class="stat-val text-danger" th:text="${report.def}"></p></div></div>
-                            <div class="col-6"><div class="stat-box mt-1"><p class="stat-label">⚡ 效率</p><p class="stat-val text-warning" th:text="${report.eff}"></p></div></div>
+                            <div class="col-6"><div class="stat-box"><p class="stat-label">🛡️ DEFENSE</p><p class="stat-val text-danger" th:text="${report.def}"></p></div></div>
+                            <div class="col-6"><div class="stat-box"><p class="stat-label">⚡ EFFICIENCY</p><p class="stat-val text-warning" th:text="${report.eff}"></p></div></div>
                         </div>
-                        <div class="analysis-box p-3 shadow-sm">
-                            <h6 class="fw-bold mb-1" th:text="${report.coreStyle}"></h6>
-                            <p class="small text-muted mb-0" th:text="${report.simpleRating}"></p>
+                        
+                        <div class="analysis-box p-4 shadow-sm" 
+                             th:classappend="${report.coreStyle.contains('退役') ? 'status-retired' : 
+                                            (report.coreStyle.contains('報銷') ? 'status-injured' : 
+                                            (report.coreStyle.contains('尚未') ? 'status-not-joined' : 'status-normal'))}">
+                            <h5 class="fw-bold mb-2" th:text="${report.coreStyle}"></h5>
+                            <p class="small text-dark mb-0 opacity-75" th:text="${report.simpleRating}"></p>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <h6 class="text-center fw-bold text-muted mb-3">綜合能力分佈</h6>
-                    <div style="height: 280px;"><canvas id="radarChart"></canvas></div>
+                <div class="card h-100 p-4">
+                    <h6 class="text-center fw-bold text-muted mb-4">📊 綜合能力分佈</h6>
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
                 </div>
             </div>
+
             <div class="col-lg-4">
-                <div class="card h-100 p-4 shadow-sm">
-                    <h6 class="text-center fw-bold text-muted mb-3">得分趨勢分析</h6>
-                    <div style="height: 280px;"><canvas id="historyChart"></canvas></div>
+                <div class="card h-100 p-4">
+                    <h6 class="text-center fw-bold text-muted mb-4">📈 近期得分波動</h6>
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="historyChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script th:if="${report != null}" th:inline="javascript">
-        // 趨勢圖加固邏輯
-        const ptsData = [[${report.ptsHistory}]];
-        if (ptsData && ptsData.length > 0) {
+        // 取得數據
+        const report = [[${report}]];
+        const ptsData = report.ptsHistory || [];
+        const radarValues = report.radarData || [0,0,0,0,0];
+
+        // 圖表共用配置
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
+
+        // 趨勢圖
+        if (ptsData.length > 0) {
             new Chart(document.getElementById('historyChart'), {
                 type: 'line',
                 data: {
                     labels: ptsData.map((_, i) => 'G' + (i + 1)),
                     datasets: [{
+                        label: '得分',
                         data: ptsData,
                         borderColor: '#0d6efd',
-                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                        fill: true, tension: 0.4
+                        backgroundColor: 'rgba(13, 110, 253, 0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0d6efd'
                     }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { display: false } } }
+                }
             });
         }
 
         // 雷達圖
-        const radarData = [[${report.radarData}]];
-        if (radarData && radarData.length > 0) {
-            new Chart(document.getElementById('radarChart'), {
-                type: 'radar',
-                data: {
-                    labels: ['得分', '籃板', '助攻', '防守', '效率'],
-                    datasets: [{
-                        data: radarData,
-                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                        borderColor: '#ffc107',
-                        borderWidth: 2
-                    }]
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['得分', '籃板', '助攻', '防守', '效率'],
+                datasets: [{
+                    data: radarValues,
+                    backgroundColor: report.pts > 0 ? 'rgba(255, 193, 7, 0.2)' : 'rgba(108, 117, 125, 0.1)',
+                    borderColor: report.pts > 0 ? '#ffc107' : '#6c757d',
+                    pointBackgroundColor: report.pts > 0 ? '#ffc107' : '#6c757d',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { display: false, stepSize: 20 },
+                        grid: { color: '#eee' },
+                        angleLines: { color: '#eee' }
+                    }
                 },
-                options: {
-                    scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } },
-                    plugins: { legend: { display: false } },
-                    maintainAspectRatio: false
-                }
-            });
-        }
+                plugins: { legend: { display: false } }
+            }
+        });
     </script>
 </body>
 </html>
