@@ -64,7 +64,7 @@ public class NBAService {
             setStats(dto, team, 17.4, 3.3, 5.2, 65, 80, Arrays.asList(15.0, 20.0, 25.0, 10.0, 17.4));
 
         } else {
-            // 安全保底：如果真的選到沒定義的人，直接顯示「無數據」
+            // 如果真的選到沒定義的人，直接顯示「無數據」
             setStats(dto, "無數據球隊", 0,0,0,0,0, Arrays.asList(0.0,0.0,0.0,0.0,0.0));
         }
 
