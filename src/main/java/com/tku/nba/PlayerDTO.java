@@ -11,14 +11,22 @@ public class PlayerDTO {
     private double ast;
     private double def;      
     private double eff;      
+    
     private String coreStyle;
     private String simpleRating; 
+    
     private List<Double> ptsHistory;
     private List<Integer> radarData; 
+    
+    private List<String> availableTeams; 
+
+    private String compareCategory; 
+    private double compareValue;   
+    private double averageValue;    
 
     public PlayerDTO() {}
 
-    // --- Getter & Setter 方法 ---
+    // --- Getter & Setter ---
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
@@ -55,4 +63,16 @@ public class PlayerDTO {
 
     public List<Integer> getRadarData() { return radarData; }
     public void setRadarData(List<Integer> radarData) { this.radarData = radarData; }
+
+    public List<String> getAvailableTeams() { return availableTeams; }
+    public void setAvailableTeams(List<String> availableTeams) { this.availableTeams = availableTeams; }
+
+    public String getCompareCategory() { return compareCategory; }
+    public void setCompareCategory(String compareCategory) { this.compareCategory = compareCategory; }
+
+    public double getCompareValue() { return compareValue; }
+    public void setCompareValue(double compareValue) { this.compareValue = compareValue; }
+
+    public double getAverageValue() { return averageValue; }
+    public void setAverageValue(double averageValue) { this.averageValue = averageValue; }
 }
