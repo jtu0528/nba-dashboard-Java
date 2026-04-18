@@ -696,19 +696,38 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         }
     }
 
-    private void analyzeStyle(PlayerDTO d) {
+    private void analyzeStyle(PlayerDTO d, int year) {
         if (d.getPts() >= HIGH_PTS && d.getAst() >= 6 && d.getReb() >= 6) {
             d.setCoreStyle("🌟 頂級全能巨星");
             d.setSimpleRating("集得分、組織和籃板於一身。");
+	    d.setCompareCategory("得分 (PTS)");
+            d.setCompareValue(d.getPts());
         } else if (d.getPts() >= HIGH_PTS) {
             d.setCoreStyle("得分機器");
             d.setSimpleRating("聯盟頂級得分手。");
+	    d.setCompareCategory("得分 (PTS)");
+            d.setCompareValue(d.getPts());
         } else if (d.getAst() >= HIGH_AST) {
             d.setCoreStyle("🎯 組織大師");
             d.setSimpleRating("以傳球優先的組織核心。");
+	    d.setCompareCategory("助攻 (AST)");
+            d.setCompareValue(d.getAst());
+	}else if (d.getReb() >= HIGH_REB || d.getDef() >= 80) { 
+            d.setCoreStyle("🧱 籃板/防守支柱");
+            d.setSimpleRating("球隊禁區或防守端的絕對核心。");
+            d.setCompareCategory("籃板 (REB)");
+            d.setCompareValue(d.getReb());
         } else {
             d.setCoreStyle("角色球員");
             d.setSimpleRating("一名可靠的輪換球員。");
+	    d.setSimpleRating("無特別優異的單項數據，屬穩定輪換陣容。");
+            d.setCompareCategory("NONE");
+        }
+		// 動態計算該賽季各數據之平均
+        if (!"NONE".equals(d.getCompareCategory())) {
+            if (d.getCompareCategory().contains("PTS")) d.setAverageValue(getSeasonAverage(year, "PTS"));
+            else if (d.getCompareCategory().contains("AST")) d.setAverageValue(getSeasonAverage(year, "AST"));
+            else if (d.getCompareCategory().contains("REB")) d.setAverageValue(getSeasonAverage(year, "REB"));
         }
     }
 
