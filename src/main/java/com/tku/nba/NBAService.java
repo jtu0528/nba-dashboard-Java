@@ -78,7 +78,7 @@ public class NBAService {
 // 狀態分析 「正常出賽」、「尚未入盟」與「賽季報銷」
         if (d.getPts() > 0) {
             // 正常出賽
-            analyzeStyle(d);
+            analyzeStyle(d, year);
 	    if(d.getTeam() != null && d.getTeam().contains("已退役")) {
                 d.setCoreStyle("🏁 已退役");
                 d.setSimpleRating("球員已退役。圖表顯示其生涯最終賽季 (" + d.getTeam().replace(" (已退役)", "") + ") 之數據。");
