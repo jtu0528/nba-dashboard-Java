@@ -18,7 +18,7 @@ public class PlayerDTO {
 
     public PlayerDTO() {}
 
-    // --- Getter & Setter (絕對不可缺少) ---
+    // --- Getter & Setter 方法 ---
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
