@@ -19,11 +19,11 @@ public class NBAController {
     public String index(
             @RequestParam(required = false) String team,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false, defaultValue = "2025") String season,
+            @RequestParam(required = false, defaultValue = "2025") String season, 
             @RequestParam(required = false, defaultValue = "TOT") String selectedTeam, 
             Model model) {
 
-        // 1. 生成賽季清單
+        // 1. 生成賽季清單 
         List<String> seasons = IntStream.rangeClosed(2000, 2025)
                 .mapToObj(String::valueOf)
                 .sorted(Comparator.reverseOrder())
@@ -41,7 +41,6 @@ public class NBAController {
             playerOptions.addAll(Arrays.asList("LeBron James", "Kobe Bryant", "Stephen Curry", "Luka Doncic", "Victor Wembanyama"));
         }
 
-        // --- 防重置核心邏輯 ---
         if (name != null && !name.isEmpty() && !name.equals("none") && !playerOptions.contains(name)) {
             playerOptions.add(0, name); 
         }
@@ -53,7 +52,7 @@ public class NBAController {
             report = nbaService.getFullAnalytics(name, season, selectedTeam);
             
             if (report != null) {
-                // 如果球員換隊，自動更新球隊選單顯示
+                // 球員換隊，自動更新球隊選單顯示
                 String rawTeam = report.getTeam();
                 if (rawTeam != null && !rawTeam.isEmpty()) {
                     String cleanTeam = rawTeam.split(" ")[0];
@@ -64,10 +63,10 @@ public class NBAController {
             }
         }
 
-        // 4. 返回模型數據
+        // 4. 返回模型數據 
         model.addAttribute("report", report);
-        model.addAttribute("selectedTeam", team);       // 頂部選單用的球隊
-        model.addAttribute("currentTeam", selectedTeam); // 數據分析用的特定球隊標記
+        model.addAttribute("filterTeam", team);         // 給頂部「1. 篩選球隊」下拉選單用的
+        model.addAttribute("selectedTeam", selectedTeam); // 給球員「多隊切換按鈕」用的
         model.addAttribute("selectedName", name);
         model.addAttribute("selectedSeason", season);
 
