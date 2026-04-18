@@ -33,13 +33,13 @@ public class NBAController {
         if (team != null && !team.isEmpty()) {
             playerOptions.addAll(nbaService.getPlayersByTeamAndSeason(team, season));
         } else {
-            // 預設明星組合
+            
             playerOptions.addAll(Arrays.asList("Michael Jordan", "Kobe Bryant", "LeBron James", "Stephen Curry", "Luka Doncic"));
         }
 
         // --- 防重置核心邏輯 ---
         if (name != null && !name.isEmpty() && !name.equals("none") && !playerOptions.contains(name)) {
-            playerOptions.add(0, name); // 強制將當前選中球員塞入選單，防止 HTML 重置
+            playerOptions.add(0, name); 
         }
         model.addAttribute("playerOptions", playerOptions);
 
