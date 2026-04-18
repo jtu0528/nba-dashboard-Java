@@ -19,12 +19,12 @@ public class NBAController {
     public String index(
             @RequestParam(required = false) String team,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false, defaultValue = "2026") String season,
+            @RequestParam(required = false, defaultValue = "2025") String season,
             @RequestParam(required = false, defaultValue = "TOT") String selectedTeam, 
             Model model) {
 
         // 1. 生成賽季清單
-        List<String> seasons = IntStream.rangeClosed(2000, 2026)
+        List<String> seasons = IntStream.rangeClosed(2000, 2025)
                 .mapToObj(String::valueOf)
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
