@@ -27,6 +27,7 @@
             <div class="card-body p-4">
                 <form action="/" method="get" class="row g-3" id="filterForm">
                     <input type="hidden" name="actionTrigger" id="actionTrigger" value="">
+                    <input type="hidden" name="pinnedName" th:value="${pinnedName}">
                     
                     <div class="col-md-4">
                         <label class="form-label small fw-bold text-muted">1. 篩選球隊</label>
@@ -68,7 +69,7 @@
                         <div th:if="${report.availableTeams != null and report.availableTeams.size() > 1}" class="mt-3">
                             <div class="btn-group btn-group-sm">
                                 <a th:each="at : ${report.availableTeams}"
-                                   th:href="@{/(team=${filterTeam}, name=${selectedName}, season=${selectedSeason}, selectedTeam=${at})}"
+                                   th:href="@{/(team=${filterTeam}, name=${selectedName}, season=${selectedSeason}, selectedTeam=${at}, pinnedName=${pinnedName})}"
                                    class="btn"
                                    th:classappend="${report.team.contains(at)} ? 'btn-light fw-bold text-dark' : 'btn-outline-light opacity-75'"
                                    th:text="${at}"></a>
