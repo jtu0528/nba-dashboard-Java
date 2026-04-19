@@ -16,7 +16,7 @@ public class NBAService {
         else if (name.contains("Stephen Curry")) handleCurry(d, year, selectedTeam);
         else if (name.contains("Kevin Durant")) handleDurant(d, year, selectedTeam);
         else if (name.contains("James Harden")) handleHarden(d, year, selectedTeam);
-        else if (name.contains("Carmelo Anthony")) handleAnthony(d, year, selectedTeam); // 已替換為甜瓜
+        else if (name.contains("Carmelo Anthony")) handleAnthony(d, year, selectedTeam); 
         else if (name.contains("Chris Paul")) handlePaul(d, year, selectedTeam);
         else if (name.contains("Shaquille O'Neal")) handleShaq(d, year, selectedTeam);
         else if (name.contains("Dwyane Wade")) handleWade(d, year, selectedTeam);
@@ -39,10 +39,8 @@ public class NBAService {
         else setStats(d, "NBA 明星", 15.0, 5.0, 5.0, 75, 80, Arrays.asList(15.0));
     }
 
-    // 計算該賽季資料庫中所有活躍球員的平均數據
     private double getSeasonAverage(int year, String category) {
         List<String> allPlayers = new ArrayList<>();
-        // 抓出該年度所有球隊的球員
         for (String t : getTeams()) {
             allPlayers.addAll(getPlayersByTeamAndSeason(t, String.valueOf(year)));
         }
@@ -53,10 +51,8 @@ public class NBAService {
 
         for (String pName : allPlayers) {
             PlayerDTO temp = new PlayerDTO();
-            // 抓取數據但不跑 analyzeStyle，避免遞迴
             populatePlayerStats(temp, pName, year, "TOT"); 
             
-            // 排除尚未入盟、受傷報銷或已退役
             if (temp.getPts() > 0 && temp.getTeam() != null && !temp.getTeam().contains("已退役")) { 
                 if ("PTS".equals(category)) total += temp.getPts();
                 else if ("AST".equals(category)) total += temp.getAst();
@@ -75,9 +71,7 @@ public class NBAService {
 
         populatePlayerStats(d, name, year, selectedTeam);
 
-        // 狀態分析 「正常出賽」、「尚未入盟」與「賽季報銷」
         if (d.getPts() > 0) {
-            // 正常出賽
             analyzeStyle(d, year);
             if(d.getTeam() != null && d.getTeam().contains("已退役")) {
                 d.setCoreStyle("🏁 已退役");
@@ -90,7 +84,6 @@ public class NBAService {
             d.setRadarData(Arrays.asList(0, 0, 0, 0, 0));
         } 
         else {
-            // 賽季報銷
             d.setCoreStyle("🚨 賽季報銷 / DNP");
             d.setSimpleRating("該賽季球員因嚴重傷勢報銷或無出賽紀錄，各項數據統計為 0。");
             d.setRadarData(Arrays.asList(0, 0, 0, 0, 0));
@@ -121,14 +114,14 @@ public class NBAService {
     private void handleLillard(PlayerDTO d, int y, String t) {
         if (y < 2012) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
-            case 2013: setStats(d, "波特蘭開拓者 (POR)", 22.9, 5.1, 6.5, 70, 88, Arrays.asList(22.9)); break;
-            case 2014: setStats(d, "波特蘭開拓者 (POR)", 21.6, 4.0, 4.6, 70, 85, Arrays.asList(21.6)); break;
-            case 2015: setStats(d, "波特蘭開拓者 (POR)", 26.5, 4.3, 6.3, 72, 92, Arrays.asList(26.5)); break;
-            case 2016: setStats(d, "波特蘭開拓者 (POR)", 27.8, 4.5, 3.3, 72, 94, Arrays.asList(27.8)); break;
-            case 2017: setStats(d, "波特蘭開拓者 (POR)", 18.5, 4.5, 4.8, 70, 85, Arrays.asList(18.5)); break;
-            case 2018: setStats(d, "波特蘭開拓者 (POR)", 26.9, 4.8, 6.6, 72, 92, Arrays.asList(26.9)); break;
-            case 2019: setStats(d, "波特蘭開拓者 (POR)", 24.3, 3.5, 4.3, 70, 90, Arrays.asList(24.3)); break;
-            case 2020: setStats(d, "波特蘭開拓者 (POR)", 34.3, 4.3, 10.2, 75, 98, Arrays.asList(34.3)); break;
+            case 2013: setStats(d, "波特蘭拓荒者 (POR)", 22.9, 5.1, 6.5, 70, 88, Arrays.asList(22.9)); break;
+            case 2014: setStats(d, "波特蘭拓荒者 (POR)", 21.6, 4.0, 4.6, 70, 85, Arrays.asList(21.6)); break;
+            case 2015: setStats(d, "波特蘭拓荒者 (POR)", 26.5, 4.3, 6.3, 72, 92, Arrays.asList(26.5)); break;
+            case 2016: setStats(d, "波特蘭拓荒者 (POR)", 27.8, 4.5, 3.3, 72, 94, Arrays.asList(27.8)); break;
+            case 2017: setStats(d, "波特蘭拓荒者 (POR)", 18.5, 4.5, 4.8, 70, 85, Arrays.asList(18.5)); break;
+            case 2018: setStats(d, "波特蘭拓荒者 (POR)", 26.9, 4.8, 6.6, 72, 92, Arrays.asList(26.9)); break;
+            case 2019: setStats(d, "波特蘭拓荒者 (POR)", 24.3, 3.5, 4.3, 70, 90, Arrays.asList(24.3)); break;
+            case 2020: setStats(d, "波特蘭拓荒者 (POR)", 34.3, 4.3, 10.2, 75, 98, Arrays.asList(34.3)); break;
             case 2023: setStats(d, "密爾瓦基公鹿 (MIL)", 31.3, 3.3, 5.0, 75, 95, Arrays.asList(31.3)); break;
             case 2024: setStats(d, "密爾瓦基公鹿 (MIL)", 7.0, 2.7, 4.7, 72, 80, Arrays.asList(7.0)); break;
         }
@@ -145,7 +138,7 @@ public class NBAService {
             case 2004: setStats(d, "孟菲斯灰熊 (MEM)", 17.8, 7.3, 2.4, 80, 88, Arrays.asList(17.8)); break;
             case 2005: setStats(d, "孟菲斯灰熊 (MEM)", 20.4, 8.9, 4.6, 82, 92, Arrays.asList(20.4)); break;
             case 2006: setStats(d, "孟菲斯灰熊 (MEM)", 20.8, 9.8, 3.4, 82, 93, Arrays.asList(20.8)); break;
-            case 2007: // 季中交易：TOT, MEM, LAL
+            case 2007: 
                 d.setAvailableTeams(Arrays.asList("TOT", "MEM", "LAL"));
                 if ("MEM".equals(t)) setStats(d, "孟菲斯灰熊 (MEM)", 18.9, 8.8, 3.0, 80, 92, Arrays.asList(18.9));
                 else if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 18.8, 7.8, 3.5, 82, 92, Arrays.asList(18.8));
@@ -161,7 +154,7 @@ public class NBAService {
             case 2015: setStats(d, "芝加哥公牛 (CHI)", 16.5, 11.0, 4.1, 80, 90, Arrays.asList(16.5)); break;
             case 2016: setStats(d, "聖安東尼奧馬刺 (SAS)", 12.4, 7.8, 2.3, 85, 85, Arrays.asList(12.4)); break;
             case 2017: setStats(d, "聖安東尼奧馬刺 (SAS)", 10.1, 8.0, 3.1, 82, 82, Arrays.asList(10.1)); break;
-            case 2018: // 季中交易：TOT, SAS, MIL
+            case 2018: 
                 d.setAvailableTeams(Arrays.asList("TOT", "SAS", "MIL"));
                 if ("SAS".equals(t)) setStats(d, "聖安東尼奧馬刺 (SAS)", 4.2, 4.7, 1.9, 75, 70, Arrays.asList(4.2));
                 else if ("MIL".equals(t)) setStats(d, "密爾瓦基公鹿 (MIL)", 1.3, 3.3, 0.7, 75, 60, Arrays.asList(1.3));
@@ -196,7 +189,7 @@ public class NBAService {
             case 2021: setStats(d, "洛杉磯湖人 (LAL)", 23.2, 9.9, 3.1, 90, 94, Arrays.asList(23.2)); break;
             case 2022: setStats(d, "洛杉磯湖人 (LAL)", 25.9, 12.5, 2.6, 92, 97, Arrays.asList(25.9)); break;
             case 2023: setStats(d, "洛杉磯湖人 (LAL)", 24.7, 12.6, 3.5, 92, 98, Arrays.asList(24.7)); break;
-            case 2024: // 季中交易：TOT, LAL, DAL
+            case 2024: 
                 d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
                 if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 25.7, 11.9, 3.4, 90, 96, Arrays.asList(25.7));
                 else if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 20.0, 10.1, 4.4, 85, 90, Arrays.asList(20.0));
@@ -287,7 +280,7 @@ public class NBAService {
             case 2011: setStats(d, "紐約尼克 (NYK)", 17.5, 7.8, 1.1, 72, 85, Arrays.asList(17.5)); break;
             case 2012: setStats(d, "紐約尼克 (NYK)", 14.2, 5.0, 0.4, 70, 78, Arrays.asList(14.2)); break;
             case 2013: setStats(d, "紐約尼克 (NYK)", 11.9, 4.9, 0.5, 68, 75, Arrays.asList(11.9)); break;
-            case 2014: // 季中交易：TOT, DAL, NYK
+            case 2014: 
                 d.setAvailableTeams(Arrays.asList("TOT", "DAL", "NYK"));
                 if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 10.8, 3.7, 0.3, 65, 75, Arrays.asList(10.8));
                 else if ("NYK".equals(t)) setStats(d, "紐約尼克 (NYK)", 12.0, 6.8, 1.0, 68, 78, Arrays.asList(12.0));
@@ -329,7 +322,7 @@ public class NBAService {
             case 2021: setStats(d, "達拉斯獨行俠 (DAL)", 28.4, 9.1, 8.7, 80, 96, Arrays.asList(28.4)); break;
             case 2022: setStats(d, "達拉斯獨行俠 (DAL)", 32.4, 8.6, 8.0, 82, 98, Arrays.asList(32.4)); break;
             case 2023: setStats(d, "達拉斯獨行俠 (DAL)", 33.9, 9.2, 9.8, 85, 100, Arrays.asList(33.9)); break;
-            case 2024: // 季中交易
+            case 2024: 
                 d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
                 if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 28.2, 8.1, 7.5, 82, 95, Arrays.asList(28.2));
                 else if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 28.1, 8.3, 7.8, 82, 95, Arrays.asList(28.1));
@@ -472,7 +465,7 @@ public class NBAService {
             case 2014: setStats(d, "邁阿密熱火 (MIA)", 21.5, 3.5, 4.8, 80, 88, Arrays.asList(21.5)); break;
             case 2015: setStats(d, "邁阿密熱火 (MIA)", 19.0, 4.1, 4.6, 78, 85, Arrays.asList(19.0)); break;
             case 2016: setStats(d, "芝加哥公牛 (CHI)", 18.3, 4.5, 3.8, 75, 82, Arrays.asList(18.3)); break;
-            case 2017: // 季中交易
+            case 2017: 
                 d.setAvailableTeams(Arrays.asList("TOT", "MIA", "CLE"));
                 if ("CLE".equals(t)) setStats(d, "克里夫蘭騎士 (CLE)", 11.2, 3.9, 3.5, 72, 80, Arrays.asList(11.2));
                 else if ("MIA".equals(t)) setStats(d, "邁阿密熱火 (MIA)", 12.0, 3.4, 3.1, 75, 82, Arrays.asList(12.0));
@@ -494,7 +487,7 @@ public class NBAService {
             case 2004: setStats(d, "邁阿密熱火 (MIA)", 22.9, 10.4, 2.7, 85, 90, Arrays.asList(22.9)); break;
             case 2005: setStats(d, "邁阿密熱火 (MIA)", 20.0, 9.2, 1.9, 82, 85, Arrays.asList(20.0)); break;
             case 2006: setStats(d, "邁阿密熱火 (MIA)", 17.3, 7.4, 2.0, 80, 80, Arrays.asList(17.3)); break;
-            case 2007: // 季中交易
+            case 2007: 
                 d.setAvailableTeams(Arrays.asList("TOT", "MIA", "PHX"));
                 if ("MIA".equals(t)) setStats(d, "邁阿密熱火 (MIA)", 14.2, 7.8, 1.4, 75, 75, Arrays.asList(14.2));
                 else if ("PHX".equals(t)) setStats(d, "鳳凰城太陽 (PHX)", 12.9, 10.6, 1.7, 78, 78, Arrays.asList(12.9));
@@ -506,7 +499,7 @@ public class NBAService {
         }
     }
 
-    // --- Carmelo Anthony  ---
+    // --- Carmelo Anthony (甜瓜) ---
     private void handleAnthony(PlayerDTO d, int y, String t) {
         if (y < 2003) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         if (y > 2021) { setStats(d, "洛杉磯湖人 (已退役)", 13.3, 4.2, 1.0, 60, 75, Arrays.asList(13.3)); return; }
@@ -738,7 +731,6 @@ public class NBAService {
             d.setCompareCategory("NONE");
         }
         
-        // 動態計算該賽季各數據之平均
         if (!"NONE".equals(d.getCompareCategory())) {
             if (d.getCompareCategory().contains("PTS")) d.setAverageValue(getSeasonAverage(year, "PTS"));
             else if (d.getCompareCategory().contains("AST")) d.setAverageValue(getSeasonAverage(year, "AST"));
@@ -762,7 +754,11 @@ public class NBAService {
         return Arrays.asList(
             "洛杉磯湖人", "達拉斯獨行俠", "鳳凰城太陽", 
             "密爾瓦基公鹿", "丹佛金塊", "聖安東尼奧馬刺",
-            "金州勇士", "邁阿密熱火", "克里夫蘭騎士", "休士頓火箭"
+            "金州勇士", "邁阿密熱火", "克里夫蘭騎士", "休士頓火箭",
+            "俄克拉荷馬雷霆", "布魯克林籃網", "波特蘭拓荒者", "紐約尼克", 
+            "洛杉磯快艇", "波士頓塞爾提克", "新奧爾良鵜鶘", "新奧爾良黃蜂", 
+            "芝加哥公牛", "孟菲斯灰熊", "亞特蘭大老鷹", "夏洛特黃蜂", 
+            "西雅圖超音速", "費城 76 人"
         );
     }
 
@@ -778,7 +774,7 @@ public class NBAService {
                 else { 
                     p.add("LeBron James"); 
                     p.add("Anthony Davis"); 
-                    if (year == 2021) p.add("Carmelo Anthony"); 
+                    if (year >= 2021) p.add("Carmelo Anthony"); 
                 }
                 break;
                 
@@ -803,7 +799,7 @@ public class NBAService {
             case "丹佛金塊":
                 if (year >= 2015) p.add("Nikola Jokic");
                 if (year >= 2016) p.add("Jamal Murray");
-                if (year >= 2003 && year <= 2010) p.add("Carmelo Anthony"); 
+                if (year >= 2003 && year <= 2010) p.add("Carmelo Anthony");
                 break;
                 
             case "聖安東尼奧馬刺":
@@ -838,9 +834,78 @@ public class NBAService {
                 if (year >= 2017 && year <= 2018) p.add("Chris Paul");
                 if (year == 2018) p.add("Carmelo Anthony"); 
                 break;
+                
+            case "俄克拉荷馬雷霆":
+                if (year >= 2008 && year <= 2015) p.add("Kevin Durant");
+                if (year >= 2009 && year <= 2011) p.add("James Harden");
+                if (year == 2017) p.add("Carmelo Anthony");
+                if (year == 2019) p.add("Chris Paul");
+                break;
+                
+            case "布魯克林籃網":
+                if (year >= 2019 && year <= 2021) p.add("Kevin Durant");
+                if (year >= 2020 && year <= 2021) p.add("Kyrie Irving");
+                if (year >= 2020 && year <= 2021) p.add("James Harden");
+                if (year == 2013) p.add("Jason Terry");
+                break;
+                
+            case "波特蘭拓荒者":
+                if (year >= 2013 && year <= 2020) p.add("Damian Lillard");
+                if (year >= 2019 && year <= 2020) p.add("Carmelo Anthony");
+                break;
+                
+            case "紐約尼克":
+                if (year >= 2010 && year <= 2016) p.add("Carmelo Anthony");
+                if (year >= 2010 && year <= 2014) p.add("Amar'e Stoudemire");
+                break;
+                
+            case "洛杉磯快艇":
+                if (year >= 2011 && year <= 2016) p.add("Chris Paul");
+                if (year == 2025) p.add("Chris Paul");
+                if (year >= 2023 && year <= 2025) p.add("James Harden");
+                break;
+                
+            case "波士頓塞爾提克":
+                if (year == 2010) p.add("Shaquille O'Neal");
+                if (year == 2012) p.add("Jason Terry");
+                if (year == 2018) p.add("Kyrie Irving");
+                break;
+                
+            case "新奧爾良鵜鶘":
+                if (year >= 2013 && year <= 2018) p.add("Anthony Davis");
+                break;
+                
+            case "新奧爾良黃蜂":
+                if (year >= 2005 && year <= 2010) p.add("Chris Paul");
+                if (year == 2012) p.add("Anthony Davis");
+                break;
+                
+            case "芝加哥公牛":
+                if (year >= 2014 && year <= 2015) p.add("Pau Gasol");
+                if (year == 2016) p.add("Dwyane Wade");
+                break;
+                
+            case "孟菲斯灰熊":
+                if (year >= 2001 && year <= 2007) p.add("Pau Gasol");
+                break;
+                
+            case "亞特蘭大老鷹":
+                if (year >= 2000 && year <= 2003) p.add("Jason Terry");
+                break;
+                
+            case "夏洛特黃蜂":
+                if (year == 2018) p.add("Tony Parker");
+                break;
+                
+            case "西雅圖超音速":
+                if (year == 2007) p.add("Kevin Durant");
+                break;
+                
+            case "費城 76 人":
+                if (year >= 2021 && year <= 2022) p.add("James Harden");
+                break;
         }
         
-        // 去除重複的球員
         return new ArrayList<>(new LinkedHashSet<>(p));
     }
 }
