@@ -41,7 +41,9 @@
                         <label class="form-label small fw-bold text-muted">2. 選擇球員</label>
                         <select name="name" class="form-select border-0 bg-light" 
                                 onchange="document.getElementById('actionTrigger').value='name'; this.form.submit()">
-                            <option value="none">-- 選擇球員 --</option>
+                            
+                            <option value="none" th:text="${playerOptions.empty} ? '-- 當季查無收錄球員 --' : '-- 選擇球員 --'"></option>
+                            
                             <option th:each="p : ${playerOptions}" th:value="${p}" th:text="${p}" th:selected="${p == selectedName}"></option>
                         </select>
                     </div>
