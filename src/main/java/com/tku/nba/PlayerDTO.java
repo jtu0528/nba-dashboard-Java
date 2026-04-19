@@ -27,52 +27,52 @@ public class PlayerDTO {
     private double averageValue;    
 
     public PlayerDTO() {}
-
-    public String getFullName() { return fullName; }
+    
     public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getFullName() { return this.fullName; }
 
-    public String getTeam() { return team; }
     public void setTeam(String team) { this.team = team; }
+    public String getTeam() { return this.team; }
 
-    public String getSeason() { return season; }
     public void setSeason(String season) { this.season = season; }
+    public String getSeason() { return this.season; }
 
-    public double getPts() { return pts; }
     public void setPts(double pts) { this.pts = pts; }
+    public double getPts() { return this.pts; }
 
-    public double getReb() { return reb; }
     public void setReb(double reb) { this.reb = reb; }
+    public double getReb() { return this.reb; }
 
-    public double getAst() { return ast; }
     public void setAst(double ast) { this.ast = ast; }
+    public double getAst() { return this.ast; }
 
-    public double getDef() { return def; }
     public void setDef(double def) { this.def = def; }
+    public double getDef() { return this.def; }
 
-    public double getEff() { return eff; }
     public void setEff(double eff) { this.eff = eff; }
+    public double getEff() { return this.eff; }
 
-    public String getCoreStyle() { return coreStyle; }
     public void setCoreStyle(String coreStyle) { this.coreStyle = coreStyle; }
+    public String getCoreStyle() { return this.coreStyle; }
 
-    public String getSimpleRating() { return simpleRating; }
     public void setSimpleRating(String simpleRating) { this.simpleRating = simpleRating; }
+    public String getSimpleRating() { return this.simpleRating; }
 
-    public List<Double> getPtsHistory() { return ptsHistory; }
     public void setPtsHistory(List<Double> ptsHistory) { this.ptsHistory = ptsHistory; }
+    public List<Double> getPtsHistory() { return this.ptsHistory; }
 
-    public List<Integer> getRadarData() { return radarData; }
     public void setRadarData(List<Integer> radarData) { this.radarData = radarData; }
+    public List<Integer> getRadarData() { return this.radarData; }
 
-    public List<String> getAvailableTeams() { return availableTeams; }
     public void setAvailableTeams(List<String> availableTeams) { this.availableTeams = availableTeams; }
+    public List<String> getAvailableTeams() { return this.availableTeams; }
 
-    public String getCompareCategory() { return compareCategory; }
     public void setCompareCategory(String compareCategory) { this.compareCategory = compareCategory; }
+    public String getCompareCategory() { return this.compareCategory; }
 
-    public double getCompareValue() { return compareValue; }
     public void setCompareValue(double compareValue) { this.compareValue = compareValue; }
+    public double getCompareValue() { return this.compareValue; }
 
-    public double getAverageValue() { return averageValue; }
     public void setAverageValue(double averageValue) { this.averageValue = averageValue; }
+    public double getAverageValue() { return this.averageValue; }
 }
