@@ -16,7 +16,7 @@ public class NBAService {
         else if (name.contains("Stephen Curry")) handleCurry(d, year, selectedTeam);
         else if (name.contains("Kevin Durant")) handleDurant(d, year, selectedTeam);
         else if (name.contains("James Harden")) handleHarden(d, year, selectedTeam);
-        else if (name.contains("Russell Westbrook")) handleWestbrook(d, year, selectedTeam);
+        else if (name.contains("Carmelo Anthony")) handleAnthony(d, year, selectedTeam); // 已替換為甜瓜
         else if (name.contains("Chris Paul")) handlePaul(d, year, selectedTeam);
         else if (name.contains("Shaquille O'Neal")) handleShaq(d, year, selectedTeam);
         else if (name.contains("Dwyane Wade")) handleWade(d, year, selectedTeam);
@@ -73,13 +73,13 @@ public class NBAService {
         d.setSeason(season);
         int year = Integer.parseInt(season);
 
-		populatePlayerStats(d, name, year, selectedTeam);
+        populatePlayerStats(d, name, year, selectedTeam);
 
-// 狀態分析 「正常出賽」、「尚未入盟」與「賽季報銷」
+        // 狀態分析 「正常出賽」、「尚未入盟」與「賽季報銷」
         if (d.getPts() > 0) {
             // 正常出賽
             analyzeStyle(d, year);
-	    if(d.getTeam() != null && d.getTeam().contains("已退役")) {
+            if(d.getTeam() != null && d.getTeam().contains("已退役")) {
                 d.setCoreStyle("🏁 已退役");
                 d.setSimpleRating("球員已退役。圖表顯示其生涯最終賽季 (" + d.getTeam().replace(" (已退役)", "") + ") 之數據。");
             }
@@ -99,7 +99,7 @@ public class NBAService {
         return d;
     }
 
-// --- Jamal Murray ---
+    // --- Jamal Murray ---
     private void handleMurray(PlayerDTO d, int y, String t) {
         if (y < 2016) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
@@ -117,7 +117,7 @@ public class NBAService {
         }
     }
 
-// --- Damian Lillard ---
+    // --- Damian Lillard ---
     private void handleLillard(PlayerDTO d, int y, String t) {
         if (y < 2012) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
@@ -134,10 +134,10 @@ public class NBAService {
         }
     }
 
-// --- Pau Gasol ---
+    // --- Pau Gasol ---
     private void handleGasol(PlayerDTO d, int y, String t) {
         if (y < 2001) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2018) { setStats(d, "TOT (已退役)", 3.9, 4.6, 1.7, 75, 65, Arrays.asList(3.9)); return; }
+        if (y > 2018) { setStats(d, "TOT (已退役)", 3.9, 4.6, 1.7, 75, 65, Arrays.asList(3.9)); return; }
         switch (y) {
             case 2001: setStats(d, "孟菲斯灰熊 (MEM)", 17.6, 8.9, 2.7, 82, 88, Arrays.asList(17.6)); break;
             case 2002: setStats(d, "孟菲斯灰熊 (MEM)", 19.0, 8.8, 2.8, 82, 90, Arrays.asList(19.0)); break;
@@ -146,7 +146,7 @@ public class NBAService {
             case 2005: setStats(d, "孟菲斯灰熊 (MEM)", 20.4, 8.9, 4.6, 82, 92, Arrays.asList(20.4)); break;
             case 2006: setStats(d, "孟菲斯灰熊 (MEM)", 20.8, 9.8, 3.4, 82, 93, Arrays.asList(20.8)); break;
             case 2007: // 季中交易：TOT, MEM, LAL
-		d.setAvailableTeams(Arrays.asList("TOT", "MEM", "LAL"));
+                d.setAvailableTeams(Arrays.asList("TOT", "MEM", "LAL"));
                 if ("MEM".equals(t)) setStats(d, "孟菲斯灰熊 (MEM)", 18.9, 8.8, 3.0, 80, 92, Arrays.asList(18.9));
                 else if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 18.8, 7.8, 3.5, 82, 92, Arrays.asList(18.8));
                 else setStats(d, "TOT (賽季總計)", 18.9, 8.4, 3.2, 82, 92, Arrays.asList(18.9));
@@ -162,7 +162,7 @@ public class NBAService {
             case 2016: setStats(d, "聖安東尼奧馬刺 (SAS)", 12.4, 7.8, 2.3, 85, 85, Arrays.asList(12.4)); break;
             case 2017: setStats(d, "聖安東尼奧馬刺 (SAS)", 10.1, 8.0, 3.1, 82, 82, Arrays.asList(10.1)); break;
             case 2018: // 季中交易：TOT, SAS, MIL
-		d.setAvailableTeams(Arrays.asList("TOT", "SAS", "MIL"));
+                d.setAvailableTeams(Arrays.asList("TOT", "SAS", "MIL"));
                 if ("SAS".equals(t)) setStats(d, "聖安東尼奧馬刺 (SAS)", 4.2, 4.7, 1.9, 75, 70, Arrays.asList(4.2));
                 else if ("MIL".equals(t)) setStats(d, "密爾瓦基公鹿 (MIL)", 1.3, 3.3, 0.7, 75, 60, Arrays.asList(1.3));
                 else setStats(d, "TOT (賽季總計)", 3.9, 4.6, 1.7, 75, 65, Arrays.asList(3.9));
@@ -170,7 +170,7 @@ public class NBAService {
         }
     }
 
-// --- Victor Wembanyama ---
+    // --- Victor Wembanyama ---
     private void handleWembanyama(PlayerDTO d, int y, String t) {
         if (y < 2023) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
@@ -180,7 +180,7 @@ public class NBAService {
         }
     }
 
-// --- Anthony Davis ---
+    // --- Anthony Davis ---
     private void handleDavis(PlayerDTO d, int y, String t) {
         if (y < 2012) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
         switch (y) {
@@ -197,7 +197,7 @@ public class NBAService {
             case 2022: setStats(d, "洛杉磯湖人 (LAL)", 25.9, 12.5, 2.6, 92, 97, Arrays.asList(25.9)); break;
             case 2023: setStats(d, "洛杉磯湖人 (LAL)", 24.7, 12.6, 3.5, 92, 98, Arrays.asList(24.7)); break;
             case 2024: // 季中交易：TOT, LAL, DAL
-		d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
+                d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
                 if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 25.7, 11.9, 3.4, 90, 96, Arrays.asList(25.7));
                 else if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 20.0, 10.1, 4.4, 85, 90, Arrays.asList(20.0));
                 else setStats(d, "TOT (賽季總計)", 24.7, 11.6, 3.5, 88, 94, Arrays.asList(24.7));
@@ -206,48 +206,48 @@ public class NBAService {
         }
     }
 
-// --- Nikola Jokic ---
-private void handleJokic(PlayerDTO d, int y, String t) {
-    if (y < 2015) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-    switch (y) {
-        case 2015: setStats(d, "丹佛金塊 (DEN)", 10.0, 7.0, 2.4, 75, 82, Arrays.asList(10.0)); break;
-        case 2016: setStats(d, "丹佛金塊 (DEN)", 16.7, 9.8, 4.9, 78, 88, Arrays.asList(16.7)); break;
-        case 2017: setStats(d, "丹佛金塊 (DEN)", 18.5, 10.7, 6.1, 80, 92, Arrays.asList(18.5)); break;
-        case 2018: setStats(d, "丹佛金塊 (DEN)", 20.1, 10.8, 7.3, 82, 94, Arrays.asList(20.1)); break;
-        case 2019: setStats(d, "丹佛金塊 (DEN)", 19.9, 9.7, 7.0, 82, 95, Arrays.asList(19.9)); break;
-        case 2020: setStats(d, "丹佛金塊 (DEN)", 26.4, 10.8, 8.3, 85, 98, Arrays.asList(26.4)); break;
-        case 2021: setStats(d, "丹佛金塊 (DEN)", 27.1, 13.8, 7.9, 88, 100, Arrays.asList(27.1)); break;
-        case 2022: setStats(d, "丹佛金塊 (DEN)", 24.5, 11.8, 9.8, 88, 99, Arrays.asList(24.5)); break;
-        case 2023: setStats(d, "丹佛金塊 (DEN)", 26.4, 12.4, 9.0, 90, 100, Arrays.asList(26.4)); break;
-        case 2024: setStats(d, "丹佛金塊 (DEN)", 29.6, 12.7, 10.2, 92, 100, Arrays.asList(29.6)); break;
-        case 2025: setStats(d, "丹佛金塊 (DEN)", 27.7, 12.9, 10.7, 92, 100, Arrays.asList(27.7)); break;
+    // --- Nikola Jokic ---
+    private void handleJokic(PlayerDTO d, int y, String t) {
+        if (y < 2015) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
+        switch (y) {
+            case 2015: setStats(d, "丹佛金塊 (DEN)", 10.0, 7.0, 2.4, 75, 82, Arrays.asList(10.0)); break;
+            case 2016: setStats(d, "丹佛金塊 (DEN)", 16.7, 9.8, 4.9, 78, 88, Arrays.asList(16.7)); break;
+            case 2017: setStats(d, "丹佛金塊 (DEN)", 18.5, 10.7, 6.1, 80, 92, Arrays.asList(18.5)); break;
+            case 2018: setStats(d, "丹佛金塊 (DEN)", 20.1, 10.8, 7.3, 82, 94, Arrays.asList(20.1)); break;
+            case 2019: setStats(d, "丹佛金塊 (DEN)", 19.9, 9.7, 7.0, 82, 95, Arrays.asList(19.9)); break;
+            case 2020: setStats(d, "丹佛金塊 (DEN)", 26.4, 10.8, 8.3, 85, 98, Arrays.asList(26.4)); break;
+            case 2021: setStats(d, "丹佛金塊 (DEN)", 27.1, 13.8, 7.9, 88, 100, Arrays.asList(27.1)); break;
+            case 2022: setStats(d, "丹佛金塊 (DEN)", 24.5, 11.8, 9.8, 88, 99, Arrays.asList(24.5)); break;
+            case 2023: setStats(d, "丹佛金塊 (DEN)", 26.4, 12.4, 9.0, 90, 100, Arrays.asList(26.4)); break;
+            case 2024: setStats(d, "丹佛金塊 (DEN)", 29.6, 12.7, 10.2, 92, 100, Arrays.asList(29.6)); break;
+            case 2025: setStats(d, "丹佛金塊 (DEN)", 27.7, 12.9, 10.7, 92, 100, Arrays.asList(27.7)); break;
+        }
     }
-}
 
-// --- Giannis Antetokounmpo ---
-private void handleGiannis(PlayerDTO d, int y, String t) {
-    if (y < 2013) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-    switch (y) {
-        case 2013: setStats(d, "密爾瓦基公鹿 (MIL)", 6.8, 4.4, 1.9, 75, 75, Arrays.asList(6.8)); break;
-        case 2014: setStats(d, "密爾瓦基公鹿 (MIL)", 12.7, 6.7, 2.6, 78, 80, Arrays.asList(12.7)); break;
-        case 2015: setStats(d, "密爾瓦基公鹿 (MIL)", 16.9, 7.7, 4.3, 82, 85, Arrays.asList(16.9)); break;
-        case 2016: setStats(d, "密爾瓦基公鹿 (MIL)", 22.9, 8.8, 5.4, 88, 92, Arrays.asList(22.9)); break;
-        case 2017: setStats(d, "密爾瓦基公鹿 (MIL)", 26.9, 10.0, 4.8, 90, 95, Arrays.asList(26.9)); break;
-        case 2018: setStats(d, "密爾瓦基公鹿 (MIL)", 27.7, 12.5, 5.9, 92, 98, Arrays.asList(27.7)); break;
-        case 2019: setStats(d, "密爾瓦基公鹿 (MIL)", 29.5, 13.6, 5.6, 95, 100, Arrays.asList(29.5)); break;
-        case 2020: setStats(d, "密爾瓦基公鹿 (MIL)", 28.1, 11.0, 5.9, 95, 100, Arrays.asList(28.1)); break;
-        case 2021: setStats(d, "密爾瓦基公鹿 (MIL)", 29.9, 11.6, 5.8, 95, 98, Arrays.asList(29.9)); break;
-        case 2022: setStats(d, "密爾瓦基公鹿 (MIL)", 31.1, 11.8, 5.7, 92, 99, Arrays.asList(31.1)); break;
-        case 2023: setStats(d, "密爾瓦基公鹿 (MIL)", 30.4, 11.5, 6.5, 90, 100, Arrays.asList(30.4)); break;
-        case 2024: setStats(d, "密爾瓦基公鹿 (MIL)", 30.4, 11.9, 6.5, 90, 100, Arrays.asList(30.4)); break;
-        case 2025: setStats(d, "密爾瓦基公鹿 (MIL)", 27.6, 9.8, 5.4, 90, 95, Arrays.asList(27.6)); break;
+    // --- Giannis Antetokounmpo ---
+    private void handleGiannis(PlayerDTO d, int y, String t) {
+        if (y < 2013) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
+        switch (y) {
+            case 2013: setStats(d, "密爾瓦基公鹿 (MIL)", 6.8, 4.4, 1.9, 75, 75, Arrays.asList(6.8)); break;
+            case 2014: setStats(d, "密爾瓦基公鹿 (MIL)", 12.7, 6.7, 2.6, 78, 80, Arrays.asList(12.7)); break;
+            case 2015: setStats(d, "密爾瓦基公鹿 (MIL)", 16.9, 7.7, 4.3, 82, 85, Arrays.asList(16.9)); break;
+            case 2016: setStats(d, "密爾瓦基公鹿 (MIL)", 22.9, 8.8, 5.4, 88, 92, Arrays.asList(22.9)); break;
+            case 2017: setStats(d, "密爾瓦基公鹿 (MIL)", 26.9, 10.0, 4.8, 90, 95, Arrays.asList(26.9)); break;
+            case 2018: setStats(d, "密爾瓦基公鹿 (MIL)", 27.7, 12.5, 5.9, 92, 98, Arrays.asList(27.7)); break;
+            case 2019: setStats(d, "密爾瓦基公鹿 (MIL)", 29.5, 13.6, 5.6, 95, 100, Arrays.asList(29.5)); break;
+            case 2020: setStats(d, "密爾瓦基公鹿 (MIL)", 28.1, 11.0, 5.9, 95, 100, Arrays.asList(28.1)); break;
+            case 2021: setStats(d, "密爾瓦基公鹿 (MIL)", 29.9, 11.6, 5.8, 95, 98, Arrays.asList(29.9)); break;
+            case 2022: setStats(d, "密爾瓦基公鹿 (MIL)", 31.1, 11.8, 5.7, 92, 99, Arrays.asList(31.1)); break;
+            case 2023: setStats(d, "密爾瓦基公鹿 (MIL)", 30.4, 11.5, 6.5, 90, 100, Arrays.asList(30.4)); break;
+            case 2024: setStats(d, "密爾瓦基公鹿 (MIL)", 30.4, 11.9, 6.5, 90, 100, Arrays.asList(30.4)); break;
+            case 2025: setStats(d, "密爾瓦基公鹿 (MIL)", 27.6, 9.8, 5.4, 90, 95, Arrays.asList(27.6)); break;
+        }
     }
-}
 
-// --- Jason Terry ---
+    // --- Jason Terry ---
     private void handleTerry(PlayerDTO d, int y, String t) {
         if (y < 1999) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2017) { setStats(d, "密爾瓦基公鹿 (已退役)", 3.3, 0.9, 1.2, 60, 60, Arrays.asList(3.3)); return; }
+        if (y > 2017) { setStats(d, "密爾瓦基公鹿 (已退役)", 3.3, 0.9, 1.2, 60, 60, Arrays.asList(3.3)); return; }
         switch (y) {
             case 2000: setStats(d, "亞特蘭大老鷹 (ATL)", 19.7, 3.3, 4.9, 70, 85, Arrays.asList(19.7)); break;
             case 2001: setStats(d, "亞特蘭大老鷹 (ATL)", 19.3, 3.5, 5.7, 72, 85, Arrays.asList(19.3)); break;
@@ -270,10 +270,10 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         }
     }
 
-// --- Amar'e Stoudemire ---
+    // --- Amar'e Stoudemire ---
     private void handleStoudemire(PlayerDTO d, int y, String t) {
         if (y < 2002) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2015) { setStats(d, "邁阿密熱火 (已退役)", 5.8, 4.3, 0.5, 65, 68, Arrays.asList(5.8)); return; }
+        if (y > 2015) { setStats(d, "邁阿密熱火 (已退役)", 5.8, 4.3, 0.5, 65, 68, Arrays.asList(5.8)); return; }
         switch (y) {
             case 2002: setStats(d, "鳳凰城太陽 (PHX)", 13.5, 8.8, 1.0, 75, 82, Arrays.asList(13.5)); break;
             case 2003: setStats(d, "鳳凰城太陽 (PHX)", 20.6, 9.0, 1.4, 78, 88, Arrays.asList(20.6)); break;
@@ -288,7 +288,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2012: setStats(d, "紐約尼克 (NYK)", 14.2, 5.0, 0.4, 70, 78, Arrays.asList(14.2)); break;
             case 2013: setStats(d, "紐約尼克 (NYK)", 11.9, 4.9, 0.5, 68, 75, Arrays.asList(11.9)); break;
             case 2014: // 季中交易：TOT, DAL, NYK
-		d.setAvailableTeams(Arrays.asList("TOT", "DAL", "NYK"));
+                d.setAvailableTeams(Arrays.asList("TOT", "DAL", "NYK"));
                 if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 10.8, 3.7, 0.3, 65, 75, Arrays.asList(10.8));
                 else if ("NYK".equals(t)) setStats(d, "紐約尼克 (NYK)", 12.0, 6.8, 1.0, 68, 78, Arrays.asList(12.0));
                 else setStats(d, "TOT (賽季總計)", 11.5, 5.6, 0.8, 68, 77, Arrays.asList(11.5));
@@ -297,10 +297,10 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         }
     }
 
-// --- Steve Nash ---
+    // --- Steve Nash ---
     private void handleNash(PlayerDTO d, int y, String t) {
         if (y < 1996) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2013) { setStats(d, "洛杉磯湖人 (已退役)", 6.8, 1.9, 5.7, 55, 70, Arrays.asList(6.8)); return; }
+        if (y > 2013) { setStats(d, "洛杉磯湖人 (已退役)", 6.8, 1.9, 5.7, 55, 70, Arrays.asList(6.8)); return; }
         switch (y) {
             case 2000: setStats(d, "達拉斯獨行俠 (DAL)", 15.6, 3.2, 7.3, 75, 88, Arrays.asList(15.6)); break;
             case 2001: setStats(d, "達拉斯獨行俠 (DAL)", 17.9, 3.1, 7.7, 75, 90, Arrays.asList(17.9)); break;
@@ -318,6 +318,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2013: setStats(d, "洛杉磯湖人 (LAL)", 6.8, 1.9, 5.7, 55, 70, Arrays.asList(6.8)); break;
         }
     }
+
     // --- Luka Doncic ---
     private void handleDoncic(PlayerDTO d, int y, String t) {
         if (y < 2018) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
@@ -329,7 +330,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2022: setStats(d, "達拉斯獨行俠 (DAL)", 32.4, 8.6, 8.0, 82, 98, Arrays.asList(32.4)); break;
             case 2023: setStats(d, "達拉斯獨行俠 (DAL)", 33.9, 9.2, 9.8, 85, 100, Arrays.asList(33.9)); break;
             case 2024: // 季中交易
-		d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
+                d.setAvailableTeams(Arrays.asList("TOT", "LAL", "DAL"));
                 if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 28.2, 8.1, 7.5, 82, 95, Arrays.asList(28.2));
                 else if ("DAL".equals(t)) setStats(d, "達拉斯獨行俠 (DAL)", 28.1, 8.3, 7.8, 82, 95, Arrays.asList(28.1));
                 else setStats(d, "TOT (賽季總計)", 28.2, 8.2, 7.7, 82, 95, Arrays.asList(28.2));
@@ -341,7 +342,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     // --- Dirk Nowitzki ---
     private void handleNowitzki(PlayerDTO d, int y, String t) {
         if (y < 1998) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2018) { setStats(d, "達拉斯獨行俠 (已退役)", 7.3, 3.1, 0.7, 60, 68, Arrays.asList(7.3)); return; }
+        if (y > 2018) { setStats(d, "達拉斯獨行俠 (已退役)", 7.3, 3.1, 0.7, 60, 68, Arrays.asList(7.3)); return; }
         switch (y) {
             case 2000: setStats(d, "達拉斯獨行俠 (DAL)", 21.8, 9.2, 2.1, 80, 88, Arrays.asList(21.8)); break;
             case 2001: setStats(d, "達拉斯獨行俠 (DAL)", 23.4, 9.9, 2.4, 82, 92, Arrays.asList(23.4)); break;
@@ -368,7 +369,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     // --- Tony Parker ---
     private void handleParker(PlayerDTO d, int y, String t) {
         if (y < 2001) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2018) { setStats(d, "夏洛特黃蜂 (已退役)", 9.5, 1.5, 3.7, 68, 72, Arrays.asList(9.5)); return; }
+        if (y > 2018) { setStats(d, "夏洛特黃蜂 (已退役)", 9.5, 1.5, 3.7, 68, 72, Arrays.asList(9.5)); return; }
         switch (y) {
             case 2001: setStats(d, "聖安東尼奧馬刺 (SAS)", 9.2, 2.6, 4.3, 75, 78, Arrays.asList(9.2)); break;
             case 2002: setStats(d, "聖安東尼奧馬刺 (SAS)", 15.5, 2.6, 5.3, 78, 85, Arrays.asList(15.5)); break;
@@ -394,7 +395,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     // --- Tim Duncan ---
     private void handleDuncan(PlayerDTO d, int y, String t) {
         if (y < 1997) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2015) { setStats(d, "聖安東尼奧馬刺 (已退役)", 8.6, 7.3, 2.7, 75, 75, Arrays.asList(8.6)); return; }
+        if (y > 2015) { setStats(d, "聖安東尼奧馬刺 (已退役)", 8.6, 7.3, 2.7, 75, 75, Arrays.asList(8.6)); return; }
         switch (y) {
             case 2000: setStats(d, "聖安東尼奧馬刺 (SAS)", 22.2, 12.2, 3.0, 95, 98, Arrays.asList(22.2)); break;
             case 2001: setStats(d, "聖安東尼奧馬刺 (SAS)", 25.5, 12.7, 3.7, 96, 100, Arrays.asList(25.5)); break;
@@ -455,7 +456,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     // --- Dwyane Wade ---
     private void handleWade(PlayerDTO d, int y, String t) {
         if (y < 2003) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2018) { setStats(d, "邁阿密熱火 (已退役)", 15.0, 4.0, 4.2, 70, 78, Arrays.asList(15.0)); return; }
+        if (y > 2018) { setStats(d, "邁阿密熱火 (已退役)", 15.0, 4.0, 4.2, 70, 78, Arrays.asList(15.0)); return; }
         switch (y) {
             case 2003: setStats(d, "邁阿密熱火 (MIA)", 16.2, 4.0, 4.5, 80, 85, Arrays.asList(16.2)); break;
             case 2004: setStats(d, "邁阿密熱火 (MIA)", 24.1, 5.2, 6.8, 85, 92, Arrays.asList(24.1)); break;
@@ -472,7 +473,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2015: setStats(d, "邁阿密熱火 (MIA)", 19.0, 4.1, 4.6, 78, 85, Arrays.asList(19.0)); break;
             case 2016: setStats(d, "芝加哥公牛 (CHI)", 18.3, 4.5, 3.8, 75, 82, Arrays.asList(18.3)); break;
             case 2017: // 季中交易
-		d.setAvailableTeams(Arrays.asList("TOT", "MIA", "CLE"));
+                d.setAvailableTeams(Arrays.asList("TOT", "MIA", "CLE"));
                 if ("CLE".equals(t)) setStats(d, "克里夫蘭騎士 (CLE)", 11.2, 3.9, 3.5, 72, 80, Arrays.asList(11.2));
                 else if ("MIA".equals(t)) setStats(d, "邁阿密熱火 (MIA)", 12.0, 3.4, 3.1, 75, 82, Arrays.asList(12.0));
                 else setStats(d, "TOT (賽季總計)", 11.4, 3.8, 3.4, 73, 81, Arrays.asList(11.4));
@@ -484,7 +485,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
     // --- Shaquille O'Neal ---
     private void handleShaq(PlayerDTO d, int y, String t) {
         if (y < 1992) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
-	if (y > 2010) { setStats(d, "波士頓塞爾提克 (已退役)", 9.2, 4.8, 0.7, 70, 70, Arrays.asList(9.2)); return; }
+        if (y > 2010) { setStats(d, "波士頓塞爾提克 (已退役)", 9.2, 4.8, 0.7, 70, 70, Arrays.asList(9.2)); return; }
         switch (y) {
             case 2000: setStats(d, "洛杉磯湖人 (LAL)", 28.7, 12.7, 3.7, 95, 95, Arrays.asList(28.7)); break;
             case 2001: setStats(d, "洛杉磯湖人 (LAL)", 27.2, 10.7, 3.0, 92, 92, Arrays.asList(27.2)); break;
@@ -494,7 +495,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2005: setStats(d, "邁阿密熱火 (MIA)", 20.0, 9.2, 1.9, 82, 85, Arrays.asList(20.0)); break;
             case 2006: setStats(d, "邁阿密熱火 (MIA)", 17.3, 7.4, 2.0, 80, 80, Arrays.asList(17.3)); break;
             case 2007: // 季中交易
-		d.setAvailableTeams(Arrays.asList("TOT", "MIA", "PHX"));
+                d.setAvailableTeams(Arrays.asList("TOT", "MIA", "PHX"));
                 if ("MIA".equals(t)) setStats(d, "邁阿密熱火 (MIA)", 14.2, 7.8, 1.4, 75, 75, Arrays.asList(14.2));
                 else if ("PHX".equals(t)) setStats(d, "鳳凰城太陽 (PHX)", 12.9, 10.6, 1.7, 78, 78, Arrays.asList(12.9));
                 else setStats(d, "TOT (賽季總計)", 13.6, 9.1, 1.5, 76, 76, Arrays.asList(13.6));
@@ -505,33 +506,36 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         }
     }
 
-    // --- Russell Westbrook ---
-    private void handleWestbrook(PlayerDTO d, int y, String t) {
-        if (y < 2008) { setStats(d, "尚未入盟", 0, 0, 0, 0, 0, Arrays.asList(0.0)); return; }
+    // --- Carmelo Anthony  ---
+    private void handleAnthony(PlayerDTO d, int y, String t) {
+        if (y < 2003) { setStats(d, "尚未入盟", 0.0, 0.0, 0.0, 0, 0, Arrays.asList(0.0)); return; }
+        if (y > 2021) { setStats(d, "洛杉磯湖人 (已退役)", 13.3, 4.2, 1.0, 60, 75, Arrays.asList(13.3)); return; }
+        
         switch (y) {
-            case 2008: setStats(d, "俄克拉荷馬雷霆 (OKC)", 15.3, 4.9, 5.3, 75, 78, Arrays.asList(15.3)); break;
-            case 2009: setStats(d, "俄克拉荷馬雷霆 (OKC)", 16.1, 4.9, 8.0, 75, 80, Arrays.asList(16.1)); break;
-            case 2010: setStats(d, "俄克拉荷馬雷霆 (OKC)", 21.9, 4.6, 8.2, 78, 85, Arrays.asList(21.9)); break;
-            case 2011: setStats(d, "俄克拉荷馬雷霆 (OKC)", 23.6, 4.6, 5.5, 80, 88, Arrays.asList(23.6)); break;
-            case 2012: setStats(d, "俄克拉荷馬雷霆 (OKC)", 23.2, 5.2, 7.4, 82, 90, Arrays.asList(23.2)); break;
-            case 2013: setStats(d, "俄克拉荷馬雷霆 (OKC)", 21.8, 5.7, 6.9, 82, 88, Arrays.asList(21.8)); break;
-            case 2014: setStats(d, "俄克拉荷馬雷霆 (OKC)", 28.1, 7.3, 8.6, 85, 94, Arrays.asList(28.1)); break;
-            case 2015: setStats(d, "俄克拉荷馬雷霆 (OKC)", 23.5, 7.8, 10.4, 88, 92, Arrays.asList(23.5)); break;
-            case 2016: setStats(d, "俄克拉荷馬雷霆 (OKC)", 31.6, 10.7, 10.4, 85, 100, Arrays.asList(31.6)); break;
-            case 2017: setStats(d, "俄克拉荷馬雷霆 (OKC)", 25.4, 10.1, 10.3, 85, 96, Arrays.asList(25.4)); break;
-            case 2018: setStats(d, "俄克拉荷馬雷霆 (OKC)", 22.9, 11.1, 10.7, 85, 95, Arrays.asList(22.9)); break;
-            case 2019: setStats(d, "休士頓火箭 (HOU)", 27.2, 7.9, 7.0, 75, 94, Arrays.asList(27.2)); break;
-            case 2020: setStats(d, "華盛頓巫師 (WAS)", 22.2, 11.5, 11.7, 72, 96, Arrays.asList(22.2)); break;
-            case 2021: setStats(d, "洛杉磯湖人 (LAL)", 18.5, 7.4, 7.1, 70, 85, Arrays.asList(18.5)); break;
-            case 2022:
-		d.setAvailableTeams(Arrays.asList("TOT", "LAL", "LAC"));
-                if ("LAC".equals(t)) setStats(d, "洛杉磯快艇 (LAC)", 15.8, 4.9, 7.6, 68, 86, Arrays.asList(15.8));
-                else if ("LAL".equals(t)) setStats(d, "洛杉磯湖人 (LAL)", 15.9, 6.2, 7.5, 65, 84, Arrays.asList(15.9));
-                else setStats(d, "TOT (賽季總計)", 15.9, 5.8, 7.5, 68, 85, Arrays.asList(15.9));
+            case 2003: setStats(d, "丹佛金塊 (DEN)", 21.0, 6.1, 2.8, 65, 80, Arrays.asList(21.0)); break;
+            case 2004: setStats(d, "丹佛金塊 (DEN)", 20.8, 5.7, 2.6, 68, 82, Arrays.asList(20.8)); break;
+            case 2005: setStats(d, "丹佛金塊 (DEN)", 26.5, 4.9, 2.7, 70, 85, Arrays.asList(26.5)); break;
+            case 2006: setStats(d, "丹佛金塊 (DEN)", 28.9, 6.0, 3.8, 70, 88, Arrays.asList(28.9)); break;
+            case 2007: setStats(d, "丹佛金塊 (DEN)", 25.7, 7.4, 3.4, 72, 86, Arrays.asList(25.7)); break;
+            case 2008: setStats(d, "丹佛金塊 (DEN)", 22.8, 6.8, 3.4, 70, 85, Arrays.asList(22.8)); break;
+            case 2009: setStats(d, "丹佛金塊 (DEN)", 28.2, 6.6, 3.2, 73, 90, Arrays.asList(28.2)); break;
+            case 2010: 
+                d.setAvailableTeams(Arrays.asList("TOT", "DEN", "NYK"));
+                if ("DEN".equals(t)) setStats(d, "丹佛金塊 (DEN)", 25.2, 7.6, 2.8, 70, 86, Arrays.asList(25.2));
+                else if ("NYK".equals(t)) setStats(d, "紐約尼克 (NYK)", 26.3, 6.7, 3.0, 72, 88, Arrays.asList(26.3));
+                else setStats(d, "TOT (賽季總計)", 25.6, 7.3, 2.9, 71, 87, Arrays.asList(25.6));
                 break;
-            case 2023: setStats(d, "洛杉磯快艇 (LAC)", 11.1, 5.0, 4.5, 70, 80, Arrays.asList(11.1)); break;
-            case 2024: setStats(d, "丹佛金塊 (DEN)", 13.3, 4.9, 6.1, 72, 82, Arrays.asList(13.3)); break;
-            case 2025: setStats(d, "沙加緬度國王 (SAC)", 15.2, 5.4, 6.7, 75, 84, Arrays.asList(15.2)); break;
+            case 2011: setStats(d, "紐約尼克 (NYK)", 22.6, 6.3, 3.6, 72, 84, Arrays.asList(22.6)); break;
+            case 2012: setStats(d, "紐約尼克 (NYK)", 28.7, 6.9, 2.6, 71, 89, Arrays.asList(28.7)); break;
+            case 2013: setStats(d, "紐約尼克 (NYK)", 27.4, 8.1, 3.1, 72, 88, Arrays.asList(27.4)); break;
+            case 2014: setStats(d, "紐約尼克 (NYK)", 24.2, 6.6, 3.1, 70, 85, Arrays.asList(24.2)); break;
+            case 2015: setStats(d, "紐約尼克 (NYK)", 21.8, 7.7, 4.2, 68, 83, Arrays.asList(21.8)); break;
+            case 2016: setStats(d, "紐約尼克 (NYK)", 22.4, 5.9, 2.9, 68, 82, Arrays.asList(22.4)); break;
+            case 2017: setStats(d, "俄克拉荷馬雷霆 (OKC)", 16.2, 5.8, 1.3, 65, 78, Arrays.asList(16.2)); break;
+            case 2018: setStats(d, "休士頓火箭 (HOU)", 13.4, 5.4, 0.5, 60, 75, Arrays.asList(13.4)); break;
+            case 2019: setStats(d, "波特蘭拓荒者 (POR)", 15.4, 6.3, 1.5, 62, 78, Arrays.asList(15.4)); break;
+            case 2020: setStats(d, "波特蘭拓荒者 (POR)", 13.4, 3.1, 1.5, 60, 76, Arrays.asList(13.4)); break;
+            case 2021: setStats(d, "洛杉磯湖人 (LAL)", 13.3, 4.2, 1.0, 60, 75, Arrays.asList(13.3)); break;
         }
     }
 
@@ -615,7 +619,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
 
     // --- Kobe Bryant ---
     private void handleKobe(PlayerDTO d, int y, String t) {
-	if (y < 1996) { setStats(d, "尚未入盟", 0,0,0,0,0, Arrays.asList(0.0)); return; }
+        if (y < 1996) { setStats(d, "尚未入盟", 0,0,0,0,0, Arrays.asList(0.0)); return; }
         if (y > 2015) { setStats(d, "洛杉磯湖人 (已退役)", 17.6, 3.7, 2.8, 65, 70, Arrays.asList(17.6)); return; }
         switch (y) {
             case 2000: setStats(d, "洛杉磯湖人", 28.5, 5.9, 5.0, 92, 90, Arrays.asList(28.5)); break;
@@ -683,13 +687,13 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2018: setStats(d, "休士頓火箭 (HOU)", 36.1, 6.6, 7.5, 75, 100, Arrays.asList(36.1)); break;
             case 2019: setStats(d, "休士頓火箭 (HOU)", 34.3, 6.6, 7.5, 78, 99, Arrays.asList(34.3)); break;
             case 2020:
-		d.setAvailableTeams(Arrays.asList("TOT", "HOU", "BKN"));
+                d.setAvailableTeams(Arrays.asList("TOT", "HOU", "BKN"));
                 if ("BKN".equals(t)) setStats(d, "布魯克林籃網 (BKN)", 24.6, 8.5, 10.9, 72, 96, Arrays.asList(24.6));
                 else if ("HOU".equals(t)) setStats(d, "休士頓火箭 (HOU)", 24.8, 5.1, 10.4, 70, 90, Arrays.asList(24.8));
                 else setStats(d, "TOT (賽季總計)", 24.6, 7.9, 10.8, 75, 95, Arrays.asList(24.6));
                 break;
             case 2021:
-		d.setAvailableTeams(Arrays.asList("TOT", "BKN", "PHI"));
+                d.setAvailableTeams(Arrays.asList("TOT", "BKN", "PHI"));
                 if ("PHI".equals(t)) setStats(d, "費城 76 人 (PHI)", 21.0, 7.1, 10.5, 75, 90, Arrays.asList(21.0));
                 else if ("BKN".equals(t)) setStats(d, "布魯克林籃網 (BKN)", 22.5, 8.0, 10.2, 72, 93, Arrays.asList(22.5));
                 else setStats(d, "TOT (賽季總計)", 22.0, 7.7, 10.3, 75, 92, Arrays.asList(22.0));
@@ -698,7 +702,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case 2023: setStats(d, "洛杉磯快艇 (LAC)", 16.6, 5.1, 8.5, 72, 88, Arrays.asList(16.6)); break;
             case 2024: setStats(d, "洛杉磯快艇 (LAC)", 22.8, 5.8, 8.7, 75, 91, Arrays.asList(22.8)); break;
             case 2025:
-		d.setAvailableTeams(Arrays.asList("TOT", "HOU", "CLE", "LAC"));
+                d.setAvailableTeams(Arrays.asList("TOT", "HOU", "CLE", "LAC"));
                 if ("HOU".equals(t)) setStats(d, "休士頓火箭 (HOU)", 26.0, 5.5, 4.8, 80, 92, Arrays.asList(26.0));
                 else if ("CLE".equals(t)) setStats(d, "克里夫蘭騎士 (CLE)", 20.5, 4.8, 7.7, 78, 88, Arrays.asList(20.5));
                 else if ("LAC".equals(t)) setStats(d, "洛杉磯快艇 (LAC)", 25.4, 4.8, 8.1, 75, 94, Arrays.asList(25.4));
@@ -711,30 +715,30 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         if (d.getPts() >= HIGH_PTS && d.getAst() >= 6 && d.getReb() >= 6) {
             d.setCoreStyle("🌟 頂級全能巨星");
             d.setSimpleRating("集得分、組織和籃板於一身。");
-	    d.setCompareCategory("得分 (PTS)");
+            d.setCompareCategory("得分 (PTS)");
             d.setCompareValue(d.getPts());
         } else if (d.getPts() >= HIGH_PTS) {
             d.setCoreStyle("得分機器");
             d.setSimpleRating("聯盟頂級得分手。");
-	    d.setCompareCategory("得分 (PTS)");
+            d.setCompareCategory("得分 (PTS)");
             d.setCompareValue(d.getPts());
         } else if (d.getAst() >= HIGH_AST) {
             d.setCoreStyle("🎯 組織大師");
             d.setSimpleRating("以傳球優先的組織核心。");
-	    d.setCompareCategory("助攻 (AST)");
+            d.setCompareCategory("助攻 (AST)");
             d.setCompareValue(d.getAst());
-	}else if (d.getReb() >= HIGH_REB || d.getDef() >= 80) { 
+        } else if (d.getReb() >= HIGH_REB || d.getDef() >= 80) { 
             d.setCoreStyle("🧱 籃板/防守支柱");
             d.setSimpleRating("球隊禁區或防守端的絕對核心。");
             d.setCompareCategory("籃板 (REB)");
             d.setCompareValue(d.getReb());
         } else {
             d.setCoreStyle("角色球員");
-            d.setSimpleRating("一名可靠的輪換球員。");
-	    d.setSimpleRating("無特別優異的單項數據，屬穩定輪換陣容。");
+            d.setSimpleRating("無特別優異的單項數據，屬穩定輪換陣容。");
             d.setCompareCategory("NONE");
         }
-		// 動態計算該賽季各數據之平均
+        
+        // 動態計算該賽季各數據之平均
         if (!"NONE".equals(d.getCompareCategory())) {
             if (d.getCompareCategory().contains("PTS")) d.setAverageValue(getSeasonAverage(year, "PTS"));
             else if (d.getCompareCategory().contains("AST")) d.setAverageValue(getSeasonAverage(year, "AST"));
@@ -752,7 +756,8 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
         d.setPtsHistory(h);
         d.setRadarData(Arrays.asList((int) (p * 3), (int) (r * 8), (int) (a * 10), (int) def, (int) eff));
     }
-// 獲取球隊清單 
+
+    // 獲取球隊清單 
     public List<String> getTeams() {
         return Arrays.asList(
             "洛杉磯湖人", "達拉斯獨行俠", "鳳凰城太陽", 
@@ -760,7 +765,6 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             "金州勇士", "邁阿密熱火", "克里夫蘭騎士", "休士頓火箭"
         );
     }
-
 
     public List<String> getPlayersByTeamAndSeason(String team, String season) {
         int year = Integer.parseInt(season);
@@ -771,7 +775,11 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
                 if (year <= 2004) { p.add("Kobe Bryant"); p.add("Shaquille O'Neal"); }
                 else if (year <= 2013) { p.add("Kobe Bryant"); p.add("Pau Gasol"); p.add("Steve Nash"); }
                 else if (year <= 2017) { p.add("Kobe Bryant"); } 
-                else { p.add("LeBron James"); p.add("Anthony Davis"); p.add("Russell Westbrook"); }
+                else { 
+                    p.add("LeBron James"); 
+                    p.add("Anthony Davis"); 
+                    if (year == 2021) p.add("Carmelo Anthony"); 
+                }
                 break;
                 
             case "達拉斯獨行俠":
@@ -795,7 +803,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
             case "丹佛金塊":
                 if (year >= 2015) p.add("Nikola Jokic");
                 if (year >= 2016) p.add("Jamal Murray");
-                if (year >= 2024) p.add("Russell Westbrook");
+                if (year >= 2003 && year <= 2010) p.add("Carmelo Anthony"); 
                 break;
                 
             case "聖安東尼奧馬刺":
@@ -828,7 +836,7 @@ private void handleGiannis(PlayerDTO d, int y, String t) {
                 if (year >= 2012 && year <= 2020) p.add("James Harden");
                 if (year >= 2014 && year <= 2015) p.add("Jason Terry");
                 if (year >= 2017 && year <= 2018) p.add("Chris Paul");
-                if (year == 2019) p.add("Russell Westbrook");
+                if (year == 2018) p.add("Carmelo Anthony"); 
                 break;
         }
         
