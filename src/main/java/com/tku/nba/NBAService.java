@@ -761,78 +761,90 @@ public class NBAService {
             "西雅圖超音速", "費城 76 人"
         );
     }
-
     public List<String> getPlayersByTeamAndSeason(String team, String season) {
         int year = Integer.parseInt(season);
         List<String> p = new ArrayList<>();
         
         switch (team) {
             case "洛杉磯湖人":
-                if (year <= 2004) { p.add("Kobe Bryant"); p.add("Shaquille O'Neal"); }
-                else if (year <= 2013) { p.add("Kobe Bryant"); p.add("Pau Gasol"); p.add("Steve Nash"); }
-                else if (year <= 2017) { p.add("Kobe Bryant"); } 
-                else { 
-                    p.add("LeBron James"); 
-                    p.add("Anthony Davis"); 
-                    if (year >= 2021) p.add("Carmelo Anthony"); 
-                }
+                if (year >= 1996 && year <= 2015) p.add("Kobe Bryant");
+                if (year >= 2000 && year <= 2003) p.add("Shaquille O'Neal");
+                if (year >= 2007 && year <= 2013) p.add("Pau Gasol");
+                if (year >= 2012 && year <= 2013) p.add("Steve Nash");
+                if (year >= 2018 && year <= 2025) p.add("LeBron James");
+                if (year >= 2019 && year <= 2024) p.add("Anthony Davis"); // AD 在 2024 後離開
+                if (year == 2021) p.add("Carmelo Anthony"); 
+                if (year >= 2024 && year <= 2025) p.add("Luka Doncic");
                 break;
                 
             case "達拉斯獨行俠":
-                if (year <= 2004) { p.add("Dirk Nowitzki"); p.add("Steve Nash"); }
-                else if (year <= 2012) { p.add("Dirk Nowitzki"); p.add("Jason Terry"); }
-                else if (year <= 2018) { p.add("Dirk Nowitzki"); p.add("Amar'e Stoudemire"); }
-                else { p.add("Luka Doncic"); p.add("Kyrie Irving"); p.add("Klay Thompson"); p.add("Anthony Davis"); }
+                if (year >= 2000 && year <= 2018) p.add("Dirk Nowitzki");
+                if (year >= 2000 && year <= 2003) p.add("Steve Nash");
+                if (year >= 2004 && year <= 2011) p.add("Jason Terry");
+                if (year == 2014) p.add("Amar'e Stoudemire");
+                if (year >= 2018 && year <= 2024) p.add("Luka Doncic");
+                if (year == 2023) p.add("Kyrie Irving");
+                if (year >= 2024 && year <= 2025) p.add("Klay Thompson");
+                if (year >= 2024 && year <= 2025) p.add("Anthony Davis");
                 break;
                 
             case "鳳凰城太陽":
-                if (year <= 2011) { p.add("Steve Nash"); p.add("Amar'e Stoudemire"); p.add("Shaquille O'Neal"); }
-                else { p.add("Chris Paul"); p.add("Kevin Durant"); }
+                if (year >= 2004 && year <= 2011) p.add("Steve Nash");
+                if (year >= 2002 && year <= 2009) p.add("Amar'e Stoudemire");
+                if (year >= 2007 && year <= 2008) p.add("Shaquille O'Neal");
+                if (year >= 2020 && year <= 2022) p.add("Chris Paul");
+                if (year >= 2022 && year <= 2024) p.add("Kevin Durant");
                 break;
                 
             case "密爾瓦基公鹿":
-                p.add("Giannis Antetokounmpo");
-                if (year >= 2016 && year <= 2018) { p.add("Jason Terry"); p.add("Pau Gasol"); }
-                if (year >= 2023) p.add("Damian Lillard");
+                if (year >= 2013 && year <= 2025) p.add("Giannis Antetokounmpo"); // 修復無條件加入的問題
+                if (year >= 2016 && year <= 2017) p.add("Jason Terry");
+                if (year == 2018) p.add("Pau Gasol");
+                if (year >= 2023 && year <= 2024) p.add("Damian Lillard");
                 break;
                 
             case "丹佛金塊":
-                if (year >= 2015) p.add("Nikola Jokic");
-                if (year >= 2016) p.add("Jamal Murray");
+                if (year >= 2015 && year <= 2025) p.add("Nikola Jokic");
+                if (year >= 2016 && year <= 2025) p.add("Jamal Murray");
                 if (year >= 2003 && year <= 2010) p.add("Carmelo Anthony");
                 break;
                 
             case "聖安東尼奧馬刺":
-                if (year <= 2018) { p.add("Tim Duncan"); p.add("Tony Parker"); p.add("Pau Gasol"); }
-                else { p.add("Victor Wembanyama"); p.add("Chris Paul"); }
+                if (year >= 2000 && year <= 2015) p.add("Tim Duncan");
+                if (year >= 2001 && year <= 2017) p.add("Tony Parker");
+                if (year >= 2016 && year <= 2018) p.add("Pau Gasol");
+                if (year >= 2023 && year <= 2025) p.add("Victor Wembanyama");
+                if (year == 2024) p.add("Chris Paul");
                 break;
                 
             case "金州勇士":
-                p.add("Stephen Curry");
-                p.add("Klay Thompson");
+                if (year >= 2009 && year <= 2025) p.add("Stephen Curry"); // 修復無條件加入的問題
+                if (year >= 2011 && year <= 2023) p.add("Klay Thompson");
                 if (year >= 2016 && year <= 2018) p.add("Kevin Durant");
                 if (year == 2023) p.add("Chris Paul");
                 break;
 
             case "邁阿密熱火":
-                p.add("Dwyane Wade");
-                if (year <= 2007) p.add("Shaquille O'Neal");
-                if (year >= 2010 && year <= 2014) p.add("LeBron James");
+                if ((year >= 2003 && year <= 2015) || (year >= 2017 && year <= 2018)) p.add("Dwyane Wade");
+                if (year >= 2004 && year <= 2007) p.add("Shaquille O'Neal");
+                if (year >= 2010 && year <= 2013) p.add("LeBron James");
                 if (year == 2015) p.add("Amar'e Stoudemire");
                 break;
 
             case "克里夫蘭騎士":
-                p.add("LeBron James");
-                if (year >= 2011 && year <= 2017) p.add("Kyrie Irving");
+                if ((year >= 2003 && year <= 2009) || (year >= 2014 && year <= 2017)) p.add("LeBron James");
+                if (year >= 2014 && year <= 2016) p.add("Kyrie Irving");
                 if (year == 2009) p.add("Shaquille O'Neal");
                 if (year == 2017) p.add("Dwyane Wade");
+                if (year == 2025) p.add("James Harden");
                 break;
 
             case "休士頓火箭":
-                if (year >= 2012 && year <= 2020) p.add("James Harden");
+                if ((year >= 2012 && year <= 2020) || year == 2025) p.add("James Harden");
                 if (year >= 2014 && year <= 2015) p.add("Jason Terry");
                 if (year >= 2017 && year <= 2018) p.add("Chris Paul");
                 if (year == 2018) p.add("Carmelo Anthony"); 
+                if (year == 2025) p.add("Kevin Durant");
                 break;
                 
             case "俄克拉荷馬雷霆":
@@ -860,8 +872,7 @@ public class NBAService {
                 break;
                 
             case "洛杉磯快艇":
-                if (year >= 2011 && year <= 2016) p.add("Chris Paul");
-                if (year == 2025) p.add("Chris Paul");
+                if ((year >= 2011 && year <= 2016) || year == 2025) p.add("Chris Paul");
                 if (year >= 2023 && year <= 2025) p.add("James Harden");
                 break;
                 
@@ -906,6 +917,7 @@ public class NBAService {
                 break;
         }
         
+        // 去除重複的球員
         return new ArrayList<>(new LinkedHashSet<>(p));
     }
 }
