@@ -1,7 +1,3 @@
-
-
-https://github.com/user-attachments/assets/a0674036-1631-40df-ad4b-1b8f4f149208
-
 # 🏀 NBA Player Analytics Dashboard (Java Web Edition)
 
 🔗 **線上即時體驗 (Live Demo):** [點此進入 NBA 數據智慧分析儀表板](https://nba-dashboard-java-1.onrender.com/)
@@ -29,4 +25,4 @@ https://github.com/user-attachments/assets/a0674036-1631-40df-ad4b-1b8f4f149208
 
 ## 🎥 系統操作演示 (Demo Video)
 
-
+https://github.com/user-attachments/assets/a0674036-1631-40df-ad4b-1b8f4f149208
